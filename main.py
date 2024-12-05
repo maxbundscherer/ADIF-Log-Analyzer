@@ -1,7 +1,9 @@
+from collections import Counter
 from datetime import datetime
 import os
 from dataclasses import dataclass
 from typing import Optional
+import matplotlib.pyplot as plt
 
 import adif_io
 
@@ -59,6 +61,29 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
     return ret_qsos
 
 
+def vis_barh_plot(vis_data, x_label, y_label, title, output_fp):
+    vis_data_f = []
+    for x in vis_data:
+        if x is not None:
+            vis_data_f.append(x)
+    vis_data = vis_data_f
+
+    counter = Counter(vis_data)
+    counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+
+    plt.figure()
+    plt.barh(counter.keys(), counter.values())
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.tight_layout()
+    if output_fp is not None:
+        plt.savefig(output_fp)
+    else:
+        plt.show()
+    plt.close("all")
+
+
 if __name__ == "__main__":
     C_WORK_DATA_DIR = "workData/"
 
@@ -95,3 +120,22 @@ if __name__ == "__main__":
     print(f"Last QSO:\t\t{all_qsos_ent[-1].time_utc_off}")
     print(f"Num QSL Sent:\t{num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
     print(f"Num Locators:\t{num_diff_locator}")
+
+    # Bar-Plot Modes
+    print("\n[Bar-Plot Modes]\n")
+
+    vis_barh_plot(
+        vis_data=[x.mode for x in all_qsos_ent],
+        x_label="Mode",
+        y_label="Count",
+        title="QSO Modes",
+        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_modes.png"
+    )
+
+    vis_barh_plot(
+        vis_data=[x.sub_mode for x in all_qsos_ent],
+        x_label="SubMode",
+        y_label="Count",
+        title="QSO SubModes",
+        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_sub_modes.png"
+    )
