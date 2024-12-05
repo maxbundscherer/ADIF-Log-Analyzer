@@ -178,6 +178,7 @@ if __name__ == "__main__":
              bins=len(set([x.time_utc_off.date() for x in all_qsos_ent])), rwidth=0.8)
     plt.xlabel("Date")
     plt.ylabel("Count")
+    plt.xticks(rotation=45)
     plt.title("QSOs per Date")
     plt.tight_layout()
     # plt.show()
