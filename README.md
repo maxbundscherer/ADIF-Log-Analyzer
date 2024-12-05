@@ -23,6 +23,14 @@ See example output below.
 
 ## Example Output
 
+```
+Total QSOs: 1261
+First QSO: 2023-12-18 17:30:00
+Last QSO: 2024-12-04 20:02:37
+Num QSL Sent: 913 (72.4%)
+Num Locators: 854
+```
+
 ![](workData/output/qsos_modes.png)
 ![](workData/output/qsos_sub_modes.png)
 ![](workData/output/qsos_bands.png)
