@@ -139,3 +139,44 @@ if __name__ == "__main__":
         title="QSO SubModes",
         output_fp=f"{C_WORK_DATA_DIR}/output/qsos_sub_modes.png"
     )
+
+    # Time-Plot Modes
+    print("\n[Time-Plot Modes]\n")
+
+    # Plot QSOS per day
+    plt.figure()
+    plt.hist([x.time_utc_off.date() for x in all_qsos_ent],
+             bins=len(set([x.time_utc_off.date() for x in all_qsos_ent])), rwidth=0.8)
+    plt.xlabel("Date")
+    plt.ylabel("Count")
+    plt.title("QSOs per Date")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_date.png")
+    plt.close("all")
+
+    # Plot QSOS per Day of the week
+    plt.figure()
+    plt.hist([x.time_utc_off.weekday() for x in all_qsos_ent],
+             bins=7, rwidth=0.8)
+    plt.xlabel("Day of the Week")
+    plt.ylabel("Count")
+    # map to monday-sunday
+    plt.xticks(range(7), ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"])
+    plt.title("QSOs per Day of the Week")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_day_of_week.png")
+    plt.close("all")
+
+    # Plot QSOS per Hour of the day
+    plt.figure()
+    plt.hist([x.time_utc_off.hour for x in all_qsos_ent],
+             bins=24, rwidth=0.8)
+    plt.xlabel("Hour of the Day")
+    plt.ylabel("Count")
+    plt.title("QSOs per Hour of the Day")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_hour_of_day.png")
+    plt.close("all")
