@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 import adif_io
 
+from utils.LocationUtil import LocationUtil
+
 
 @dataclass
 class QsoEntity:
@@ -21,6 +23,7 @@ class QsoEntity:
     locator: Optional[str]
     freq: float
     qsl_sent: bool
+    calc_distance: Optional[float]
 
     def __str__(self):
         return f"Call: {self.call}, My Call: {self.my_call}, Time On: {self.time_utc_on}, Time Off: {self.time_utc_off}, Mode: {self.mode}, Sub Mode: {self.sub_mode}, My Locator: {self.my_locator}, Locator: {self.locator}, Freq: {self.freq}, QSL Sent: {self.qsl_sent}"
@@ -44,6 +47,19 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
     ret_qsos: [QsoEntity] = []
 
     for t_qso in input_qsos:
+
+        calc_distance = None
+        if "gridsquare" in t_qso:
+            try:
+                calc_distance = LocationUtil.calc_distance_azimuth(
+                    loc_0=LocationUtil.maidenhead_to_coordinates(t_qso["gridsquare"]),
+                    loc_1=LocationUtil.maidenhead_to_coordinates(t_qso["my_gridsquare"])
+                )
+                calc_distance = calc_distance.distance
+                calc_distance = round(calc_distance, 2)
+            except Exception as e:
+                pass
+
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
             my_call=t_qso["station_callsign"],
@@ -55,7 +71,8 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             my_locator=t_qso["my_gridsquare"],
             locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
             freq=round(float(t_qso["freq"]), 3),
-            qsl_sent=t_qso["qsl_sent"] == "Y"
+            qsl_sent=t_qso["qsl_sent"] == "Y",
+            calc_distance=calc_distance
         ))
 
     ret_qsos.sort(key=lambda x: x.time_utc_off)
@@ -116,10 +133,12 @@ if __name__ == "__main__":
     num_total_qsos = len(all_qsos_ent)
     num_send_qsl = len([x for x in all_qsos_ent if x.qsl_sent])
     num_diff_locator = len(set([x.locator for x in all_qsos_ent if x.locator is not None]))
+    num_calc_distance = len([x for x in all_qsos_ent if x.calc_distance is not None])
 
     print(f"Total QSOs:\t\t{num_total_qsos}")
     print(f"First QSO:\t\t{all_qsos_ent[0].time_utc_off}")
     print(f"Last QSO:\t\t{all_qsos_ent[-1].time_utc_off}")
+    print(f"Num Calc Dist:\t{num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
     print(f"Num QSL Sent:\t{num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
     print(f"Num Locators:\t{num_diff_locator}")
 
@@ -189,4 +208,19 @@ if __name__ == "__main__":
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_hour_of_day.png")
+    plt.close("all")
+
+    # Hist Mode
+    print("\n[Hist Mode]\n")
+
+    # Plot Distance
+    plt.figure()
+    plt.hist([x.calc_distance for x in all_qsos_ent if x.calc_distance is not None],
+             bins=100, rwidth=0.8)
+    plt.xlabel("Distance [km]")
+    plt.ylabel("Count")
+    plt.title("QSOs Distance")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
     plt.close("all")
