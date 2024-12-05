@@ -15,6 +15,7 @@ class QsoEntity:
     time_utc_on: datetime
     time_utc_off: datetime
     mode: str
+    band: str
     sub_mode: Optional[str]
     my_locator: str
     locator: Optional[str]
@@ -49,6 +50,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             time_utc_on=datetime.strptime(t_qso["qso_date"] + t_qso["time_on"], "%Y%m%d%H%M%S"),
             time_utc_off=datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"], "%Y%m%d%H%M%S"),
             mode=t_qso["mode"],
+            band=t_qso["band"],
             sub_mode=t_qso["submode"] if "submode" in t_qso else None,
             my_locator=t_qso["my_gridsquare"],
             locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
@@ -138,6 +140,14 @@ if __name__ == "__main__":
         y_label="Count",
         title="QSO SubModes",
         output_fp=f"{C_WORK_DATA_DIR}/output/qsos_sub_modes.png"
+    )
+
+    vis_barh_plot(
+        vis_data=[x.band for x in all_qsos_ent],
+        x_label="Band",
+        y_label="Count",
+        title="QSO Bands",
+        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_bands.png"
     )
 
     # Time-Plot Modes
