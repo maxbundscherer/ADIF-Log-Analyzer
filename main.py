@@ -2,12 +2,13 @@ from collections import Counter
 from datetime import datetime
 import os
 from dataclasses import dataclass
-from typing import Optional
 import matplotlib.pyplot as plt
-
 import adif_io
-
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 from utils.LocationUtil import LocationUtil
+from typing import Optional
 
 
 @dataclass
@@ -58,7 +59,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                 calc_distance = calc_distance.distance
                 calc_distance = round(calc_distance, 2)
             except Exception as e:
-                pass
+                print(f"Warn by {t_qso['gridsquare']}: {e}")
 
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
@@ -103,6 +104,80 @@ def vis_barh_plot(vis_data, x_label, y_label, title, output_fp):
     plt.close("all")
 
 
+def vis_map(worked_grid_locators, fp):
+    # Convert to coordinates
+    worked_grid_locators_cp = []
+    for locator in worked_grid_locators:
+        try:
+            worked_grid_locators_cp.append(LocationUtil.maidenhead_to_coordinates(locator))
+        except Exception as e:
+            print(f"Warn by {locator}: {e}")
+
+    worked_grid_locators = worked_grid_locators_cp
+
+    coordinates = []
+    lines = []  # Speicher für Verbindungsdaten
+    for locator in worked_grid_locators:
+        coordinates.append({"Grid": "Test", "Latitude": locator.latitude, "Longitude": locator.longitude})
+        lines.append(
+            {"start_lat": my_lat, "start_lon": my_lon, "end_lat": locator.latitude, "end_lon": locator.longitude})
+
+    # Daten in ein DataFrame umwandeln
+    df = pd.DataFrame(coordinates)
+
+    # Weltkarte mit den Koordinaten erstellen
+    fig = px.scatter_geo(
+        df,
+        lat="Latitude",
+        lon="Longitude",
+        # text="Grid",  # Textbeschriftung (Grid-Locator)
+        # title="Amateurfunk Grid-Locators",
+        # projection="natural earth"  # Projektion der Karte
+    )
+
+    for line in lines:
+        fig.add_trace(go.Scattergeo(
+            lon=[line["start_lon"], line["end_lon"]],
+            lat=[line["start_lat"], line["end_lat"]],
+            mode="lines",
+            line=dict(width=0.5, color="rgba(0, 0, 0, 0.2)"),
+            # name="Connection"
+            showlegend=False
+        ))
+
+    # fig.show()
+
+    fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
+    fig.update_traces(marker=dict(size=3))
+
+    fig.write_image(fp, scale=3)
+
+    # import plotly.express as px
+    #
+    # # Datenquelle: Beispieldaten mit Ländern und Werten
+    # data = {
+    #     'country': ['Germany', 'France', 'United States', 'China', 'Brazil'],
+    #     'value': [80, 70, 300, 1400, 210]
+    # }
+    #
+    # # Daten als DataFrame erstellen
+    # import pandas as pd
+    #
+    # df = pd.DataFrame(data)
+    #
+    # # Weltkarte mit Plotly Express
+    # fig = px.choropleth(
+    #     df,
+    #     locations="country",  # Spalte mit Ländernamen
+    #     locationmode="country names",  # Länder-Modus: Name statt ISO-Codes
+    #     color="value",  # Spalte, die farblich dargestellt wird
+    #     title="Weltkarte mit Werten"
+    # )
+    #
+    # # Karte anzeigen
+    # fig.show()
+
+
 if __name__ == "__main__":
     C_WORK_DATA_DIR = "workData/"
 
@@ -133,7 +208,17 @@ if __name__ == "__main__":
     num_total_qsos = len(all_qsos_ent)
     num_send_qsl = len([x for x in all_qsos_ent if x.qsl_sent])
     num_diff_locator = len(set([x.locator for x in all_qsos_ent if x.locator is not None]))
+    num_diff_my_locator = len(set([x.my_locator for x in all_qsos_ent]))
+    num_diff_my_call = len(set([x.my_call for x in all_qsos_ent]))
     num_calc_distance = len([x for x in all_qsos_ent if x.calc_distance is not None])
+
+    assert num_diff_my_locator == 1, "Error: Multiple My Locators found"
+    my_locator = all_qsos_ent[0].my_locator
+    my_lat, my_lon = LocationUtil.maidenhead_to_coordinates(
+        my_locator).latitude, LocationUtil.maidenhead_to_coordinates(my_locator).longitude
+
+    assert num_diff_my_call == 1, "Error: Multiple My Calls found"
+    my_call = all_qsos_ent[0].my_call
 
     print(f"Total QSOs:\t\t{num_total_qsos}")
     print(f"First QSO:\t\t{all_qsos_ent[0].time_utc_off}")
@@ -141,6 +226,8 @@ if __name__ == "__main__":
     print(f"Num Calc Dist:\t{num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
     print(f"Num QSL Sent:\t{num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
     print(f"Num Locators:\t{num_diff_locator}")
+    print("My Locator:\t\t" + my_locator)
+    print("My Call:\t\t" + my_call)
 
     # Bar-Plot Modes
     print("\n[Bar-Plot Modes]\n")
@@ -225,3 +312,8 @@ if __name__ == "__main__":
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
     plt.close("all")
+
+    # Map
+    print("\n[Map]\n")
+
+    vis_map([x.locator for x in all_qsos_ent if x.locator is not None], fp=f"{C_WORK_DATA_DIR}/output/qsos_map.png")

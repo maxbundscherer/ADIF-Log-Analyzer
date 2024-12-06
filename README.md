@@ -31,6 +31,7 @@ Num QSL Sent: 913 (72.4%)
 Num Locators: 854
 ```
 
+![](workData/output/qsos_map.png)
 ![](workData/output/qsos_modes.png)
 ![](workData/output/qsos_sub_modes.png)
 ![](workData/output/qsos_bands.png)
