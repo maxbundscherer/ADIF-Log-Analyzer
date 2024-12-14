@@ -104,7 +104,17 @@ def vis_barh_plot(vis_data, x_label, y_label, title, output_fp):
     plt.close("all")
 
 
-def vis_map(worked_grid_locators, fp):
+def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
+    print("Process Static Mode: ", static_mode)
+
+    worked_items = []
+    worked_grid_locators = []
+
+    for item in items:
+        if item.locator is not None:
+            worked_items.append(item)
+            worked_grid_locators.append(item.locator)
+
     # Convert to coordinates
     worked_grid_locators_cp = []
     for locator in worked_grid_locators:
@@ -114,43 +124,102 @@ def vis_map(worked_grid_locators, fp):
             print(f"Warn by {locator}: {e}")
 
     worked_grid_locators = worked_grid_locators_cp
+    del worked_grid_locators_cp
 
     coordinates = []
-    lines = []  # Speicher für Verbindungsdaten
-    for locator in worked_grid_locators:
-        coordinates.append({"Grid": "Test", "Latitude": locator.latitude, "Longitude": locator.longitude})
+    lines = []  #
+
+    for locator, item in zip(worked_grid_locators, worked_items):
+        out_time = item.time_utc_off.strftime("%Y-%m-%d %H:%M")
+
+        coordinates.append(
+            {
+                "HoverLabel": item.call + " (" + item.mode + ") " + str(item.freq) + " MHz " + out_time,
+                "Latitude": locator.latitude,
+                "Longitude": locator.longitude,
+                "Band": item.band
+            }
+        )
         lines.append(
-            {"start_lat": my_lat, "start_lon": my_lon, "end_lat": locator.latitude, "end_lon": locator.longitude})
+            {"start_lat": my_lat,
+             "start_lon": my_lon,
+             "end_lat": locator.latitude,
+             "end_lon": locator.longitude
+             })
 
     # Daten in ein DataFrame umwandeln
     df = pd.DataFrame(coordinates)
 
     # Weltkarte mit den Koordinaten erstellen
-    fig = px.scatter_geo(
+    fig = px.scatter_mapbox(
         df,
         lat="Latitude",
         lon="Longitude",
-        # text="Grid",  # Textbeschriftung (Grid-Locator)
+        color="Band",
+        hover_name="HoverLabel",
+        hover_data={"HoverLabel": False,
+                    "Latitude": False,
+                    "Longitude": False,
+                    "Band": False,
+                    },
         # title="Amateurfunk Grid-Locators",
         # projection="natural earth"  # Projektion der Karte
     )
 
-    for line in lines:
-        fig.add_trace(go.Scattergeo(
-            lon=[line["start_lon"], line["end_lon"]],
-            lat=[line["start_lat"], line["end_lat"]],
-            mode="lines",
-            line=dict(width=0.5, color="rgba(0, 0, 0, 0.2)"),
-            # name="Connection"
-            showlegend=False
-        ))
+    # for line in lines:
+    #     fig.add_trace(go.Scattergeo(
+    #         lon=[line["start_lon"], line["end_lon"]],
+    #         lat=[line["start_lat"], line["end_lat"]],
+    #         mode="lines",
+    #         line=dict(width=0.5, color="rgba(0, 0, 0, 0.2)"),
+    #         # name="Connection"
+    #         showlegend=False
+    #     ))
 
     # fig.show()
 
-    fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
-    fig.update_traces(marker=dict(size=3))
+    if static_mode:
 
-    fig.write_image(fp, scale=3)
+        # PNG CONFIG
+        fig.update_layout(
+            # mapbox_style="carto-positron",
+            mapbox_style="carto-darkmatter",
+            # mapbox_style="open-street-map",
+            mapbox_zoom=1.5,
+            width=1920, height=1080,
+            mapbox_center={"lat": 51.1657 - 25.0, "lon": 10.4515},
+            margin=dict(l=0, r=0, t=0, b=0),
+        )
+
+    else:
+
+        # HTML CONFIG
+        fig.update_layout(
+            # mapbox_style="carto-positron",
+            mapbox_style="carto-darkmatter",
+            # mapbox_style="open-street-map",
+            mapbox_zoom=1.2,
+            # width=1920, height=1080,
+            mapbox_center={"lat": 51.1657 - 25.0, "lon": 10.4515},
+            margin=dict(l=0, r=0, t=0, b=0),
+            # dragmode="zoom"
+        )
+
+    fig.update_traces(marker=dict(size=9))
+
+    # fig.update_layout(map_style="open-street-map")
+    # fig.update_layout()
+    # fig.update_traces(marker=dict(size=5))
+
+    if fp_html != "":
+        fig.write_html(fp_html,
+                       # include_plotlyjs='cdn',
+                       full_html=True
+                       )
+
+    if fp != "":
+        fig.write_image(fp, scale=3)
+    # fig.show()
 
     # import plotly.express as px
     #
@@ -316,4 +385,6 @@ if __name__ == "__main__":
     # Map
     print("\n[Map]\n")
 
-    vis_map([x.locator for x in all_qsos_ent if x.locator is not None], fp=f"{C_WORK_DATA_DIR}/output/qsos_map.png")
+    vis_map(all_qsos_ent, fp=f"{C_WORK_DATA_DIR}/output/qsos_map.png", static_mode=True)
+
+    vis_map(all_qsos_ent, fp_html=f"{C_WORK_DATA_DIR}/output/qsos_map.html", static_mode=False)

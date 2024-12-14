@@ -23,13 +23,26 @@ See example output below.
 
 ## Example Output
 
+### Stats
+
 ```
-Total QSOs: 1261
+Total QSOs: 1345
 First QSO: 2023-12-18 17:30:00
-Last QSO: 2024-12-04 20:02:37
-Num QSL Sent: 913 (72.4%)
-Num Locators: 854
+Last QSO: 2024-12-14 12:24:36
+Num Calc Dist: 1342 (99.78%)
+Num QSL Sent: 913 (67.88%)
+Num Locators: 905
+My Locator: JN59NK
+My Call: DF0OHM
 ```
+
+### Interactive Plots
+
+- [QSOs Map](workData/output/qsos_map.html)
+
+<iframe src="workData/output/qsos_map.html" width="100%" height="500"></iframe>
+
+### Pngs
 
 ![](workData/output/qsos_map.png)
 ![](workData/output/qsos_modes.png)
