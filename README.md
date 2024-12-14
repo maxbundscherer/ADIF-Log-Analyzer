@@ -36,12 +36,6 @@ My Locator: JN59NK
 My Call: DF0OHM
 ```
 
-### Interactive Plots
-
-- [QSOs Map](workData/output/qsos_map.html)
-
-<iframe src="workData/output/qsos_map.html" width="100%" height="500"></iframe>
-
 ### Pngs
 
 ![](workData/output/qsos_map.png)
