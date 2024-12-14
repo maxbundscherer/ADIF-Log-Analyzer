@@ -117,14 +117,17 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
 
     # Convert to coordinates
     worked_grid_locators_cp = []
-    for locator in worked_grid_locators:
+    items_cp = []
+    for locator, item in zip(worked_grid_locators, worked_items):
         try:
             worked_grid_locators_cp.append(LocationUtil.maidenhead_to_coordinates(locator))
+            items_cp.append(item)
         except Exception as e:
             print(f"Warn by {locator}: {e}")
 
     worked_grid_locators = worked_grid_locators_cp
-    del worked_grid_locators_cp
+    worked_items = items_cp
+    del worked_grid_locators_cp, items_cp
 
     coordinates = []
     lines = []  #
