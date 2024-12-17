@@ -48,6 +48,12 @@ My Call:		DF0OHM
 ![](workData/output/qso_per_day_of_week.png)
 ![](workData/output/qso_per_hour_of_day.png)
 
+### Stats
+
+![](workData/output/stats_top_stations.png)
+![](workData/output/stats_top_locators.png)
+![](workData/output/stats_top_countries.png)
+
 ### Files
 
 - `workData/output/qso_map.html`

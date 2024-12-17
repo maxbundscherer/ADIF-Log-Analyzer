@@ -24,6 +24,7 @@ class QsoEntity:
     locator: Optional[str]
     freq: float
     qsl_sent: bool
+    country: str
     calc_distance: Optional[float]
 
     def __str__(self):
@@ -49,6 +50,9 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
 
     for t_qso in input_qsos:
 
+        # print(t_qso)
+        # raise Exception("Stop here")
+
         calc_distance = None
         if "gridsquare" in t_qso:
             try:
@@ -73,6 +77,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
             freq=round(float(t_qso["freq"]), 3),
             qsl_sent=t_qso["qsl_sent"] == "Y",
+            country=t_qso["country"],
             calc_distance=calc_distance
         ))
 
@@ -378,6 +383,48 @@ if __name__ == "__main__":
     fig.update_xaxes(tickangle=90)
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
+
+    # Top n state
+    print("\n[Top N Stats]\n")
+
+    all_items = [x.call for x in all_qsos_ent]
+    counter = Counter(all_items)
+    counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+    counter = dict(list(counter.items())[:20])
+    plt.barh(list(counter.keys()), counter.values())
+    plt.xlabel("Count")
+    plt.ylabel("Station")
+    plt.title("Top 20: Worked Stations")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_stations.png")
+    plt.close("all")
+
+    all_items = [x.locator for x in all_qsos_ent]
+    counter = Counter(all_items)
+    counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+    counter = dict(list(counter.items())[:20])
+    plt.barh(list(counter.keys()), counter.values())
+    plt.xlabel("Count")
+    plt.ylabel("Locator")
+    plt.title("Top 20: Worked Locators")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_locators.png")
+    plt.close("all")
+
+    all_items = [x.country for x in all_qsos_ent]
+    counter = Counter(all_items)
+    counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+    counter = dict(list(counter.items())[:20])
+    plt.barh(list(counter.keys()), counter.values())
+    plt.xlabel("Count")
+    plt.ylabel("Country")
+    plt.title("Top 20: Worked Countries")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_countries.png")
+    plt.close("all")
 
     # Map
     print("\n[Map]\n")
