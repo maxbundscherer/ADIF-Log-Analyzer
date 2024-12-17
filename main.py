@@ -311,7 +311,7 @@ if __name__ == "__main__":
         x_label="Count",
         y_label="Mode",
         title="QSO Mode",
-        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_modes.png"
+        output_fp=f"{C_WORK_DATA_DIR}/output/qso_modes.png"
     )
 
     vis_barh_plot(
@@ -319,7 +319,7 @@ if __name__ == "__main__":
         x_label="Count",
         y_label="Sub Mode",
         title="QSO Sub Mode",
-        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_sub_modes.png"
+        output_fp=f"{C_WORK_DATA_DIR}/output/qso_sub_modes.png"
     )
 
     vis_barh_plot(
@@ -327,7 +327,7 @@ if __name__ == "__main__":
         x_label="Count",
         y_label="Band",
         title="QSO Band",
-        output_fp=f"{C_WORK_DATA_DIR}/output/qsos_bands.png"
+        output_fp=f"{C_WORK_DATA_DIR}/output/qso_bands.png"
     )
 
     # Time-Plot Modes
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     fig.update_xaxes(title_text="Date")
     fig.update_yaxes(title_text="Count")
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_date.png")
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_date.png")
 
     # Plot QSOS per Day of the week
     df = pd.DataFrame([{"Weekday": x.time_utc_off.weekday(), "Count": 1} for x in all_qsos_ent])
@@ -350,7 +350,7 @@ if __name__ == "__main__":
     fig.update_xaxes(title_text="Day of the Week")
     fig.update_yaxes(title_text="Count")
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_day_of_week.png")
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_day_of_week.png")
 
     # Plot QSOS per Hour of the day
     df = pd.DataFrame([{"Hour": x.time_utc_off.hour, "Count": 1} for x in all_qsos_ent])
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     fig.update_xaxes(title_text="Hour of the Day")
     fig.update_yaxes(title_text="Count")
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_hour_of_day.png")
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_hour_of_day.png")
 
     # Hist Mode
     print("\n[Hist Mode]\n")
@@ -371,11 +371,11 @@ if __name__ == "__main__":
     fig.update_yaxes(title_text="Count")
     fig.update_xaxes(tickangle=90)
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
 
     # Map
     print("\n[Map]\n")
 
-    vis_map(all_qsos_ent, fp=f"{C_WORK_DATA_DIR}/output/qsos_map.png", static_mode=True)
+    vis_map(all_qsos_ent, fp=f"{C_WORK_DATA_DIR}/output/qso_map.png", static_mode=True)
 
-    vis_map(all_qsos_ent, fp_html=f"{C_WORK_DATA_DIR}/output/qsos_map.html", static_mode=False)
+    vis_map(all_qsos_ent, fp_html=f"{C_WORK_DATA_DIR}/output/qso_map.html", static_mode=False)
