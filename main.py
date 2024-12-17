@@ -334,58 +334,43 @@ if __name__ == "__main__":
     print("\n[Time-Plot Modes]\n")
 
     # Plot QSOS per day
-    plt.figure()
-    plt.hist([x.time_utc_off.date() for x in all_qsos_ent],
-             bins=len(set([x.time_utc_off.date() for x in all_qsos_ent])), rwidth=0.8)
-    plt.xlabel("Date")
-    plt.ylabel("Count")
-    plt.xticks(rotation=45)
-    plt.title("QSOs per Date")
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_date.png")
-    plt.close("all")
+    df = pd.DataFrame([{"Date": x.time_utc_off.date(), "Count": 1} for x in all_qsos_ent])
+    fig = px.histogram(df, x="Date", y="Count", title="QSO per Date", nbins=len(set(df["Date"])))
+    fig.update_xaxes(tickangle=90)
+    fig.update_xaxes(title_text="Date")
+    fig.update_yaxes(title_text="Count")
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_date.png")
 
     # Plot QSOS per Day of the week
-    plt.figure()
-    plt.hist([x.time_utc_off.weekday() for x in all_qsos_ent],
-             bins=7, rwidth=0.8)
-    plt.xlabel("Day of the Week")
-    plt.ylabel("Count")
-    # map to monday-sunday
-    plt.xticks(range(7), ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"])
-    plt.title("QSOs per Day of the Week")
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_day_of_week.png")
-    plt.close("all")
+    df = pd.DataFrame([{"Weekday": x.time_utc_off.weekday(), "Count": 1} for x in all_qsos_ent])
+    df["Weekday"] = df["Weekday"].map({0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"})
+    fig = px.histogram(df, x="Weekday", y="Count", title="QSO per Day of the Week", nbins=7)
+    fig.update_xaxes(tickangle=90)
+    fig.update_xaxes(title_text="Day of the Week")
+    fig.update_yaxes(title_text="Count")
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_day_of_week.png")
 
     # Plot QSOS per Hour of the day
-    plt.figure()
-    plt.hist([x.time_utc_off.hour for x in all_qsos_ent],
-             bins=24, rwidth=0.8)
-    plt.xlabel("Hour of the Day")
-    plt.ylabel("Count")
-    plt.title("QSOs per Hour of the Day")
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_per_hour_of_day.png")
-    plt.close("all")
+    df = pd.DataFrame([{"Hour": x.time_utc_off.hour, "Count": 1} for x in all_qsos_ent])
+    fig = px.histogram(df, x="Hour", y="Count", title="QSO per Hour of the Day", nbins=24)
+    fig.update_xaxes(tickangle=90)
+    fig.update_xaxes(title_text="Hour of the Day")
+    fig.update_yaxes(title_text="Count")
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_per_hour_of_day.png")
 
     # Hist Mode
     print("\n[Hist Mode]\n")
 
     # Plot Distance
-    plt.figure()
-    plt.hist([x.calc_distance for x in all_qsos_ent if x.calc_distance is not None],
-             bins=100, rwidth=0.8)
-    plt.xlabel("Distance [km]")
-    plt.ylabel("Count")
-    plt.title("QSOs Distance")
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
-    plt.close("all")
+    df = pd.DataFrame([{"Distance": x.calc_distance} for x in all_qsos_ent if x.calc_distance is not None])
+    fig = px.histogram(df, x="Distance", title="QSO Distance", nbins=100)
+    fig.update_xaxes(title_text="Distance [m]")
+    fig.update_yaxes(title_text="Count")
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
 
     # Map
     print("\n[Map]\n")
