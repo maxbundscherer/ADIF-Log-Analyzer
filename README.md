@@ -23,19 +23,6 @@ See example output below.
 
 ## Example Output
 
-### Stats
-
-```
-Total QSOs:		1345
-First QSO:		2023-12-18 17:30:00
-Last QSO:		2024-12-14 12:24:36
-Num Calc Dist:	1342 (99.78%)
-Num QSL Sent:	913 (67.88%)
-Num Locators:	905
-My Locator:		JN59NK
-My Call:		DF0OHM
-```
-
 ### Pngs
 
 ![](workData/output/qso_map.png)
@@ -57,3 +44,27 @@ My Call:		DF0OHM
 ### Files
 
 - `workData/output/qso_map.html`
+
+### Stats
+
+```
+Total QSOs: 1368
+First QSO: 2023-12-18 17:30:00
+Last QSO: 2024-12-16 19:15:29
+Num QSL Sent: 913 (66.74%)
+Num Locators: 920
+My Locator: JN59NK
+My Call: DF0OHM
+```
+
+```
+# Clubstations Germany 
+
+DL0EPC Karl
+DK0PT University Club Station OTH Regensburg
+DF0TV Club Station Erlangen, B08
+DL0DM Deutsches Museum
+DL0MLU Martin-Luther-University
+DK0BMW Clubstation BMW Werk Regensburg
+DF0GIF Sigi DJ8VJ
+```
