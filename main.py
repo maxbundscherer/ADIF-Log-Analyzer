@@ -308,25 +308,25 @@ if __name__ == "__main__":
 
     vis_barh_plot(
         vis_data=[x.mode for x in all_qsos_ent],
-        x_label="Mode",
-        y_label="Count",
-        title="QSO Modes",
+        x_label="Count",
+        y_label="Mode",
+        title="QSO Mode",
         output_fp=f"{C_WORK_DATA_DIR}/output/qsos_modes.png"
     )
 
     vis_barh_plot(
         vis_data=[x.sub_mode for x in all_qsos_ent],
-        x_label="SubMode",
-        y_label="Count",
-        title="QSO SubModes",
+        x_label="Count",
+        y_label="Sub Mode",
+        title="QSO Sub Mode",
         output_fp=f"{C_WORK_DATA_DIR}/output/qsos_sub_modes.png"
     )
 
     vis_barh_plot(
         vis_data=[x.band for x in all_qsos_ent],
-        x_label="Band",
-        y_label="Count",
-        title="QSO Bands",
+        x_label="Count",
+        y_label="Band",
+        title="QSO Band",
         output_fp=f"{C_WORK_DATA_DIR}/output/qsos_bands.png"
     )
 
@@ -367,8 +367,9 @@ if __name__ == "__main__":
     # Plot Distance
     df = pd.DataFrame([{"Distance": x.calc_distance} for x in all_qsos_ent if x.calc_distance is not None])
     fig = px.histogram(df, x="Distance", title="QSO Distance", nbins=100)
-    fig.update_xaxes(title_text="Distance [m]")
+    fig.update_xaxes(title_text="Distance [km]")
     fig.update_yaxes(title_text="Count")
+    fig.update_xaxes(tickangle=90)
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qsos_distance.png")
 
