@@ -59,7 +59,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                 calc_distance = calc_distance.distance
                 calc_distance = round(calc_distance, 2)
             except Exception as e:
-                print(f"Warn by {t_qso['gridsquare']}: {e}")
+                print(f"Warn by {t_qso['gridsquare']}/{t_qso['call']}: {e}")
 
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
@@ -123,7 +123,7 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
             worked_grid_locators_cp.append(LocationUtil.maidenhead_to_coordinates(locator))
             items_cp.append(item)
         except Exception as e:
-            print(f"Warn by {locator}: {e}")
+            print(f"Warn by {locator}/{item.call}: {e}")
 
     worked_grid_locators = worked_grid_locators_cp
     worked_items = items_cp
@@ -165,6 +165,7 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
                     "Longitude": False,
                     "Band": False,
                     },
+
         # title="Amateurfunk Grid-Locators",
         # projection="natural earth"  # Projektion der Karte
     )
@@ -201,9 +202,9 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
             # mapbox_style="carto-positron",
             mapbox_style="carto-darkmatter",
             # mapbox_style="open-street-map",
-            mapbox_zoom=1.2,
+            mapbox_zoom=1,
             # width=1920, height=1080,
-            mapbox_center={"lat": 51.1657 - 25.0, "lon": 10.4515},
+            # mapbox_center={"lat": 51.1657 - 25.0, "lon": 10.4515},
             margin=dict(l=0, r=0, t=0, b=0),
             # dragmode="zoom"
         )
@@ -217,6 +218,7 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
     if fp_html != "":
         fig.write_html(fp_html,
                        # include_plotlyjs='cdn',
+                       config={'scrollZoom': True},
                        full_html=True
                        )
 
