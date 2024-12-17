@@ -19,6 +19,7 @@ class QsoEntity:
     time_utc_off: datetime
     mode: str
     band: str
+    name: str
     sub_mode: Optional[str]
     my_locator: str
     locator: Optional[str]
@@ -65,6 +66,10 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             except Exception as e:
                 print(f"Warn by {t_qso['gridsquare']}/{t_qso['call']}: {e}")
 
+        t_name = ""
+        if "name" in t_qso:
+            t_name = t_qso["name"]
+
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
             my_call=t_qso["station_callsign"],
@@ -78,6 +83,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             freq=round(float(t_qso["freq"]), 3),
             qsl_sent=t_qso["qsl_sent"] == "Y",
             country=t_qso["country"],
+            name=t_name,
             calc_distance=calc_distance
         ))
 
@@ -425,6 +431,30 @@ if __name__ == "__main__":
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_countries.png")
     plt.close("all")
+
+    # Dynamic Filter
+    print("\n[Dynamic Filter]\n")
+
+
+    def df_germany():
+
+        print("# Clubstations Germany \n")
+
+        # Filter
+        filtered_items = [x for x in all_qsos_ent if x.country == "Federal Republic Of Germany"]
+        filtered_items = [x for x in filtered_items if x.call[2] == "0"]
+        filtered_items = [x for x in filtered_items if x.call[1] != "J"]
+        # map to call
+        filtered_items_call = [x.call for x in filtered_items]
+        filtered_items_call = list(set(filtered_items_call))
+
+        for item in filtered_items_call:
+            i_call = item
+            i_name = [x.name for x in filtered_items if x.call == i_call][0]
+            print(f"{i_call}:\t {i_name}")
+
+
+    df_germany()
 
     # Map
     print("\n[Map]\n")
