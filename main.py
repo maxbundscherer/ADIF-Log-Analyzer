@@ -346,11 +346,11 @@ if __name__ == "__main__":
 
     # Plot QSOS per day
     df = pd.DataFrame([{"Date": x.time_utc_off.date(), "Count": 1} for x in all_qsos_ent])
-    fig = px.histogram(df, x="Date", y="Count", title="QSO per Date", nbins=len(set(df["Date"])))
+    fig = px.histogram(df, x="Date", y="Count", title="QSO per Date", nbins=len(set(df["Date"])) * 4)
     fig.update_xaxes(tickangle=90)
     fig.update_xaxes(title_text="Date")
     fig.update_yaxes(title_text="Count")
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    # fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_date.png")
 
     # Plot QSOS per Day of the week
