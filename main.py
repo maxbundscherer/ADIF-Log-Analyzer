@@ -137,7 +137,9 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
 
         coordinates.append(
             {
-                "HoverLabel": item.call + " (" + item.mode + ") " + str(item.freq) + " MHz " + out_time,
+                "HoverLabel": item.call + " (" + item.mode + ") " + str(
+                    item.freq) + " MHz " + out_time + " " + item.locator + " (" + str(
+                    int(round(item.calc_distance, 0))) + " km)",
                 "Latitude": locator.latitude,
                 "Longitude": locator.longitude,
                 "Band": item.band
@@ -152,6 +154,10 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
 
     # Daten in ein DataFrame umwandeln
     df = pd.DataFrame(coordinates)
+
+    # Group by Latitute and Longitude
+    df = df.groupby(["Latitude", "Longitude"]).agg(
+        {"HoverLabel": lambda x: "<br>".join(x), "Band": "last"}).reset_index()
 
     # Weltkarte mit den Koordinaten erstellen
     fig = px.scatter_mapbox(
