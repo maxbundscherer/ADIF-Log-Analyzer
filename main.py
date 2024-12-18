@@ -223,6 +223,7 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
             # width=1920, height=1080,
             # mapbox_center={"lat": 51.1657 - 25.0, "lon": 10.4515},
             margin=dict(l=0, r=0, t=0, b=0),
+            showlegend=False,
             # dragmode="zoom"
         )
 
@@ -396,11 +397,11 @@ if __name__ == "__main__":
     all_items = [x.call for x in all_qsos_ent]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
-    counter = dict(list(counter.items())[:20])
+    counter = dict(list(counter.items())[:25])
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Station")
-    plt.title("Top 20: Worked Stations")
+    plt.title("Top 25: Worked Stations")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_stations.png")
@@ -409,11 +410,11 @@ if __name__ == "__main__":
     all_items = [x.locator for x in all_qsos_ent]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
-    counter = dict(list(counter.items())[:20])
+    counter = dict(list(counter.items())[:25])
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Locator")
-    plt.title("Top 20: Worked Locators")
+    plt.title("Top 25: Worked Locators")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_locators.png")
@@ -422,11 +423,11 @@ if __name__ == "__main__":
     all_items = [x.country for x in all_qsos_ent]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
-    counter = dict(list(counter.items())[:20])
+    counter = dict(list(counter.items())[:25])
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Country")
-    plt.title("Top 20: Worked Countries")
+    plt.title("Top 25: Worked Countries")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_countries.png")
