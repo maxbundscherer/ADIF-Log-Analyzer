@@ -473,7 +473,7 @@ if __name__ == "__main__":
         data_y.append(item.calc_duration // 60)
     plt.barh(data_x, data_y)
     plt.xlabel("Duration [min]")
-    plt.ylabel("Call (Mode)")
+    plt.ylabel("Station (Mode)")
     plt.title("Top 25: Longest QSO")
     plt.tight_layout()
     # plt.show()
