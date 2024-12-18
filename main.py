@@ -27,6 +27,7 @@ class QsoEntity:
     qsl_sent: bool
     country: str
     calc_distance: Optional[float]
+    calc_duration: float
 
     def __str__(self):
         return f"Call: {self.call}, My Call: {self.my_call}, Time On: {self.time_utc_on}, Time Off: {self.time_utc_off}, Mode: {self.mode}, Sub Mode: {self.sub_mode}, My Locator: {self.my_locator}, Locator: {self.locator}, Freq: {self.freq}, QSL Sent: {self.qsl_sent}"
@@ -84,7 +85,10 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             qsl_sent=t_qso["qsl_sent"] == "Y",
             country=t_qso["country"],
             name=t_name,
-            calc_distance=calc_distance
+            calc_distance=calc_distance,
+            calc_duration=(datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"],
+                                             "%Y%m%d%H%M%S") - datetime.strptime(t_qso["qso_date"] + t_qso["time_on"],
+                                                                                 "%Y%m%d%H%M%S")).total_seconds()
         ))
 
     ret_qsos.sort(key=lambda x: x.time_utc_off)
@@ -456,6 +460,24 @@ if __name__ == "__main__":
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_countries.png")
+    plt.close("all")
+
+    # Get top 25 qso with max duration
+    all_items_cp = all_qsos_ent.copy()
+    all_items_cp.sort(key=lambda x: x.calc_duration, reverse=True)
+    all_items_cp = all_items_cp[:25]
+    data_x = []
+    data_y = []
+    for item in all_items_cp:
+        data_x.append(item.call + " (" + item.mode + ")")
+        data_y.append(item.calc_duration // 60)
+    plt.barh(data_x, data_y)
+    plt.xlabel("Duration [min]")
+    plt.ylabel("Call (Mode)")
+    plt.title("Top 25: Longest QSO")
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_longest_qso.png")
     plt.close("all")
 
     # Dynamic Filter

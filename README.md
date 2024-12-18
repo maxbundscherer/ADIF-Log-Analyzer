@@ -37,8 +37,9 @@ See example output below.
 ![](workData/output/qso_per_day_of_week.png)
 ![](workData/output/qso_per_hour_of_day.png)
 
-### Stats
+### Top Lists
 
+![](workData/output/stats_top_longest_qso.png)
 ![](workData/output/stats_top_stations.png)
 ![](workData/output/stats_top_locators.png)
 ![](workData/output/stats_top_countries.png)
