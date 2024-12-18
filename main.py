@@ -320,7 +320,7 @@ if __name__ == "__main__":
     print(f"First QSO: {all_qsos_ent[0].time_utc_off}")
     print(f"Last QSO: {all_qsos_ent[-1].time_utc_off}")
     print(f"Num Calc Dist: {num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
-    print(f"Num QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
+    print(f"Num Paper QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
     print(f"Num Locators: {num_diff_locator}")
     print("My Locator: " + my_locator)
     print("My Call: " + my_call)
@@ -332,7 +332,7 @@ if __name__ == "__main__":
         vis_data=[x.mode for x in all_qsos_ent],
         x_label="Count",
         y_label="Mode",
-        title="QSO Mode",
+        title="Mode",
         output_fp=f"{C_WORK_DATA_DIR}/output/qso_modes.png"
     )
 
@@ -340,7 +340,7 @@ if __name__ == "__main__":
         vis_data=[x.sub_mode for x in all_qsos_ent],
         x_label="Count",
         y_label="Sub Mode",
-        title="QSO Sub Mode",
+        title="Sub Mode",
         output_fp=f"{C_WORK_DATA_DIR}/output/qso_sub_modes.png"
     )
 
@@ -348,7 +348,7 @@ if __name__ == "__main__":
         vis_data=[x.band for x in all_qsos_ent],
         x_label="Count",
         y_label="Band",
-        title="QSO Band",
+        title="Band",
         output_fp=f"{C_WORK_DATA_DIR}/output/qso_bands.png"
     )
 
@@ -401,7 +401,7 @@ if __name__ == "__main__":
 
     # Plot Distance
     df = pd.DataFrame([{"Distance": x.calc_distance} for x in all_qsos_ent if x.calc_distance is not None])
-    fig = px.histogram(df, x="Distance", title="QSO Distance", nbins=100)
+    fig = px.histogram(df, x="Distance", title="Distance", nbins=100)
     fig.update_xaxes(title_text="Distance [km]")
     fig.update_yaxes(title_text="Count")
     fig.update_xaxes(tickangle=90)
@@ -413,7 +413,7 @@ if __name__ == "__main__":
     df = pd.DataFrame([{"Date": x.time_utc_off.date(), "Count": 1} for x in all_qsos_ent])
     df = df.groupby("Date").agg({"Count": "sum"}).reset_index()
     df["RunningSum"] = df["Count"].cumsum()
-    fig = px.line(df, x="Date", y="RunningSum", title="QSO Count over Time")
+    fig = px.line(df, x="Date", y="RunningSum", title="Count over Time")
     fig.update_xaxes(title_text="Date")
     fig.update_yaxes(title_text="QSO Count")
     fig.update_xaxes(tickangle=90)
@@ -430,7 +430,7 @@ if __name__ == "__main__":
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Station")
-    plt.title("Top 25: Worked Stations")
+    plt.title("Top 25: Stations")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_stations.png")
@@ -443,7 +443,7 @@ if __name__ == "__main__":
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Locator")
-    plt.title("Top 25: Worked Locators")
+    plt.title("Top 25: Locators")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_locators.png")
@@ -456,7 +456,7 @@ if __name__ == "__main__":
     plt.barh(list(counter.keys()), counter.values())
     plt.xlabel("Count")
     plt.ylabel("Country")
-    plt.title("Top 25: Worked Countries")
+    plt.title("Top 25: Countries")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_countries.png")
@@ -507,8 +507,6 @@ if __name__ == "__main__":
 
 
     df_germany()
-
-    raise Exception("Stop here")
 
     # Map
     print("\n[Map]\n")

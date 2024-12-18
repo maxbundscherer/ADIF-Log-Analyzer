@@ -58,14 +58,14 @@ See example output below.
 Total QSO: 1368
 First QSO: 2023-12-18 17:30:00
 Last QSO: 2024-12-16 19:15:29
-Num QSL Sent: 913 (66.74%)
+Num Paper QSL Sent: 913 (66.74%)
 Num Locators: 920
 My Locator: JN59NK
 My Call: DF0OHM
 ```
 
 ```
-# Clubstations Germany 
+# Clubstations Germany
 
 2024-03-09 12:51:45 - DF0TV: Club Station Erlangen, B08
 2024-10-30 09:57:30 - DL0DM: Deutsches Museum
