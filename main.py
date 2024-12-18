@@ -474,7 +474,7 @@ if __name__ == "__main__":
     plt.barh(data_x, data_y)
     plt.xlabel("Duration [min]")
     plt.ylabel("Station (Mode)")
-    plt.title("Top 25: Duration")
+    plt.title("Top 25: Durations")
     plt.tight_layout()
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_longest_qso.png")
