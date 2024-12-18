@@ -312,14 +312,14 @@ if __name__ == "__main__":
     assert num_diff_my_call == 1, "Error: Multiple My Calls found"
     my_call = all_qsos_ent[0].my_call
 
-    print(f"Total QSOs:\t\t{num_total_qsos}")
-    print(f"First QSO:\t\t{all_qsos_ent[0].time_utc_off}")
-    print(f"Last QSO:\t\t{all_qsos_ent[-1].time_utc_off}")
-    print(f"Num Calc Dist:\t{num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
-    print(f"Num QSL Sent:\t{num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
-    print(f"Num Locators:\t{num_diff_locator}")
-    print("My Locator:\t\t" + my_locator)
-    print("My Call:\t\t" + my_call)
+    print(f"Total QSO: {num_total_qsos}")
+    print(f"First QSO: {all_qsos_ent[0].time_utc_off}")
+    print(f"Last QSO: {all_qsos_ent[-1].time_utc_off}")
+    print(f"Num Calc Dist: {num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
+    print(f"Num QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
+    print(f"Num Locators: {num_diff_locator}")
+    print("My Locator: " + my_locator)
+    print("My Call: " + my_call)
 
     # Bar-Plot Modes
     print("\n[Bar-Plot Modes]\n")
@@ -474,13 +474,19 @@ if __name__ == "__main__":
         filtered_items_call = [x.call for x in filtered_items]
         filtered_items_call = list(set(filtered_items_call))
 
+        # sort by date
+        filtered_items_call.sort(key=lambda x: [y.time_utc_off for y in filtered_items if y.call == x][-1])
+
         for item in filtered_items_call:
             i_call = item
             i_name = [x.name for x in filtered_items if x.call == i_call][0]
-            print(f"{i_call}:\t {i_name}")
+            i_last_date = [x.time_utc_off for x in filtered_items if x.call == i_call][-1]
+            print(f"{i_last_date} - {i_call}: {i_name}")
 
 
     df_germany()
+
+    raise Exception("Stop here")
 
     # Map
     print("\n[Map]\n")
