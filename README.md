@@ -55,11 +55,11 @@ See example output below.
 ### Stats
 
 ```
-Total QSO: 1368
+Total QSO: 1374
 First QSO: 2023-12-18 17:30:00
-Last QSO: 2024-12-16 19:15:29
-Num Paper QSL Sent: 913 (66.74%)
-Num Locators: 920
+Last QSO: 2024-12-18 18:18:44
+Num Paper QSL Sent: 913 (66.45%)
+Num Locators: 922
 My Locator: JN59NK
 My Call: DF0OHM
 ```
