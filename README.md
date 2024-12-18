@@ -32,6 +32,8 @@ See example output below.
 ![](workData/output/qso_distance.png)
 
 ![](workData/output/qso_per_date.png)
+![](workData/output/qso_count_over_time.png)
+![](workData/output/qso_per_month_of_year.png)
 ![](workData/output/qso_per_day_of_week.png)
 ![](workData/output/qso_per_hour_of_day.png)
 

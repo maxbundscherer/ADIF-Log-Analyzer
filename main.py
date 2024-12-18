@@ -360,6 +360,19 @@ if __name__ == "__main__":
     # fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_date.png")
 
+    # Plot QSOS per Month of the year
+    df = pd.DataFrame([{"Month": x.time_utc_off.month, "Count": 1} for x in all_qsos_ent])
+    df = df.sort_values(by="Month")
+    df["Month"] = df["Month"].map({1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug",
+                                   9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec"})
+    # Dec should be last
+    fig = px.histogram(df, x="Month", y="Count", title="QSO per Month of the Year", nbins=12)
+    fig.update_xaxes(tickangle=90)
+    fig.update_xaxes(title_text="Month of the Year")
+    fig.update_yaxes(title_text="Count")
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_month_of_year.png")
+
     # Plot QSOS per Day of the week
     df = pd.DataFrame([{"Weekday": x.time_utc_off.weekday(), "Count": 1} for x in all_qsos_ent])
     df["Weekday"] = df["Weekday"].map({0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"})
@@ -390,6 +403,18 @@ if __name__ == "__main__":
     fig.update_xaxes(tickangle=90)
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
+
+    print("\n[QSO Count over Time]\n")
+
+    df = pd.DataFrame([{"Date": x.time_utc_off.date(), "Count": 1} for x in all_qsos_ent])
+    df = df.groupby("Date").agg({"Count": "sum"}).reset_index()
+    df["RunningSum"] = df["Count"].cumsum()
+    fig = px.line(df, x="Date", y="RunningSum", title="QSO Count over Time")
+    fig.update_xaxes(title_text="Date")
+    fig.update_yaxes(title_text="QSO Count")
+    fig.update_xaxes(tickangle=90)
+    # fig.show()
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_count_over_time.png")
 
     # Top n state
     print("\n[Top N Stats]\n")
