@@ -26,11 +26,13 @@ class QsoEntity:
     freq: float
     qsl_sent: bool
     country: str
+    rst_rcvd: str
+    rst_sent: str
     calc_distance: Optional[float]
     calc_duration: float
 
-    def __str__(self):
-        return f"Call: {self.call}, My Call: {self.my_call}, Time On: {self.time_utc_on}, Time Off: {self.time_utc_off}, Mode: {self.mode}, Sub Mode: {self.sub_mode}, My Locator: {self.my_locator}, Locator: {self.locator}, Freq: {self.freq}, QSL Sent: {self.qsl_sent}"
+    # def __str__(self):
+    #     return f"Call: {self.call}, My Call: {self.my_call}, Time On: {self.time_utc_on}, Time Off: {self.time_utc_off}, Mode: {self.mode}, Sub Mode: {self.sub_mode}, My Locator: {self.my_locator}, Locator: {self.locator}, Freq: {self.freq}, QSL Sent: {self.qsl_sent} Country: {self.country}, RST Rcvd: {self.rst_rcvd}, Name: {self.name}, Calc Distance: {self.calc_distance}, Calc Duration: {self.calc_duration} "
 
 
 def get_all_qsos(input_paths):
@@ -71,6 +73,14 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
         if "name" in t_qso:
             t_name = t_qso["name"]
 
+        rst_rcvd = ""
+        if "rst_rcvd" in t_qso:
+            rst_rcvd = t_qso["rst_rcvd"]
+
+        rst_sent = ""
+        if "rst_sent" in t_qso:
+            rst_sent = t_qso["rst_sent"]
+
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
             my_call=t_qso["station_callsign"],
@@ -84,6 +94,8 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             freq=round(float(t_qso["freq"]), 3),
             qsl_sent=t_qso["qsl_sent"] == "Y",
             country=t_qso["country"],
+            rst_rcvd=rst_rcvd,
+            rst_sent=rst_sent,
             name=t_name,
             calc_distance=calc_distance,
             calc_duration=(datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"],
@@ -395,6 +407,50 @@ if __name__ == "__main__":
     fig.update_yaxes(title_text="Count")
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_hour_of_day.png")
+
+    # FT8 Plots
+    print("\n[FT8 Plots]\n")
+
+    all_qsos_ft8 = [x for x in all_qsos_ent if x.mode == "FT8"]
+
+    # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
+    df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
+    df = df[df["RST_Sent"] != ""]
+    print(df.head())
+    df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
+    print(df.head())
+    fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
+
+                     color="Band"
+                     )
+    fig.update_xaxes(title_text="Distance [km]")
+    fig.update_yaxes(title_text="RST Sent SNR [dB]")
+    fig.update_xaxes(tickangle=90)
+    # limit y to -30 to 30
+    fig.update_yaxes(range=[-30, 30])
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_sent.png")
+    # fig.show()
+
+    df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
+    df = df[df["rst_rcvd"] != ""]
+    print(df.head())
+    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
+    print(df.head())
+    fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
+
+                     color="Band"
+                     )
+    fig.update_xaxes(title_text="Distance [km]")
+    fig.update_yaxes(title_text="RST Rcvd SNR [dB]")
+    fig.update_xaxes(tickangle=90)
+    # limit y to -30 to 30
+    fig.update_yaxes(range=[-30, 30])
+    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
+    # fig.show()
+
+    raise Exception("Stop here")
 
     # Hist Mode
     print("\n[Hist Mode]\n")
