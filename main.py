@@ -405,6 +405,8 @@ if __name__ == "__main__":
 
     # Plot QSOS per Day of the week
     df = pd.DataFrame([{"Weekday": x.time_utc_off.weekday(), "Count": 1} for x in all_qsos_ent])
+    # Sort by weekday
+    df = df.sort_values(by="Weekday")
     df["Weekday"] = df["Weekday"].map({0: "Mo", 1: "Tu", 2: "We", 3: "Th", 4: "Fr", 5: "Sa", 6: "Su"})
     fig = px.histogram(df, x="Weekday", y="Count", title="QSO per Day of the Week", nbins=7)
     fig.update_xaxes(tickangle=90)
@@ -430,6 +432,7 @@ if __name__ == "__main__":
     # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
     df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
     df = df[df["RST_Sent"] != ""]
+    df["RST_Sent"] = df["RST_Sent"].map(lambda x: x.replace("--", "-"))
     df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
     fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
 
@@ -446,6 +449,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
     df = df[df["rst_rcvd"] != ""]
+    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: x.replace("--", "-"))
     df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
     fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
 
