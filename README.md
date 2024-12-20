@@ -8,7 +8,7 @@ See example output below.
 
 ## Live Demo
 
-[Live Demo](https://dd7mb.de/df0ohm-2024.html)
+See also [Live Demo](https://dd7mb.de/df0ohm-2024.html)
 
 ## Let's get started
 
