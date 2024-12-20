@@ -328,14 +328,28 @@ if __name__ == "__main__":
     assert num_diff_my_call == 1, "Error: Multiple My Calls found"
     my_call = all_qsos_ent[0].my_call
 
-    print(f"Total QSO: {num_total_qsos}")
-    print(f"First QSO: {all_qsos_ent[0].time_utc_off}")
-    print(f"Last QSO: {all_qsos_ent[-1].time_utc_off}")
-    print(f"Num Calc Dist: {num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
-    print(f"Num Paper QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
-    print(f"Num Locators: {num_diff_locator}")
-    print("My Locator: " + my_locator)
-    print("My Call: " + my_call)
+    txt_out = ""
+    # print(f"Total QSO: {num_total_qsos}")
+    txt_out += f"Total QSO: {num_total_qsos}\n"
+    # print(f"First QSO: {all_qsos_ent[0].time_utc_off}")
+    txt_out += f"First QSO: {all_qsos_ent[0].time_utc_off}\n"
+    # print(f"Last QSO: {all_qsos_ent[-1].time_utc_off}")
+    txt_out += f"Last QSO: {all_qsos_ent[-1].time_utc_off}\n"
+    # print(f"Num Calc Dist: {num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)")
+    txt_out += f"Num Calc Dist: {num_calc_distance} ({round(num_calc_distance / num_total_qsos * 100, 2)}%)\n"
+    # print(f"Num Paper QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)")
+    txt_out += f"Num Paper QSL Sent: {num_send_qsl} ({round(num_send_qsl / num_total_qsos * 100, 2)}%)\n"
+    # print(f"Num Locators: {num_diff_locator}")
+    txt_out += f"Num Locators: {num_diff_locator}\n"
+    # print("My Locator: " + my_locator)
+    txt_out += "My Locator: " + my_locator + "\n"
+    # print("My Call: " + my_call)
+    txt_out += "My Call: " + my_call + "\n"
+
+    print(txt_out)
+
+    with open(f"{C_WORK_DATA_DIR}/output/ov_logbook.txt", "w") as f:
+        f.write(txt_out)
 
     # Bar-Plot Modes
     print("\n[Bar-Plot Modes]\n")
@@ -416,9 +430,7 @@ if __name__ == "__main__":
     # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
     df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
     df = df[df["RST_Sent"] != ""]
-    print(df.head())
     df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
-    print(df.head())
     fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
 
                      color="Band"
@@ -434,9 +446,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
     df = df[df["rst_rcvd"] != ""]
-    print(df.head())
     df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
-    print(df.head())
     fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
 
                      color="Band"
@@ -449,8 +459,6 @@ if __name__ == "__main__":
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
     # fig.show()
-
-    raise Exception("Stop here")
 
     # Hist Mode
     print("\n[Hist Mode]\n")
@@ -540,9 +548,12 @@ if __name__ == "__main__":
     print("\n[Dynamic Filter]\n")
 
 
-    def df_germany():
+    def df_germany(fp_out=""):
 
-        print("# Clubstations Germany \n")
+        txt_out = ""
+
+        # print("# Club Stations Germany \n")
+        txt_out += "# Club Stations Germany \n\n"
 
         # Filter
         filtered_items = [x for x in all_qsos_ent if x.country == "Federal Republic Of Germany"]
@@ -559,10 +570,44 @@ if __name__ == "__main__":
             i_call = item
             i_name = [x.name for x in filtered_items if x.call == i_call][0]
             i_last_date = [x.time_utc_off for x in filtered_items if x.call == i_call][-1]
-            print(f"{i_last_date} - {i_call}: {i_name}")
+            # print(f"{i_last_date} - {i_call}: {i_name}")
+            txt_out += f"{i_last_date} - {i_call}: {i_name}\n"
+
+        # print("\n# Special Stations Germany \n")
+        txt_out += "\n# Special Stations Germany \n\n"
+
+        # Filter
+        filtered_items = [x for x in all_qsos_ent if x.country == "Federal Republic Of Germany"]
+        filtered_items_cp = []
+        for item in filtered_items:
+            t_call = item.call
+            # Check if special call (with at least two digits)
+            if len([x for x in t_call if x.isdigit()]) >= 2:
+                filtered_items_cp.append(item)
+        filtered_items = filtered_items_cp
+
+        # map to call
+        filtered_items_call = [x.call for x in filtered_items]
+        filtered_items_call = list(set(filtered_items_call))
+
+        # sort by date
+        filtered_items_call.sort(key=lambda x: [y.time_utc_off for y in filtered_items if y.call == x][-1])
+
+        for item in filtered_items_call:
+            i_call = item
+            i_name = [x.name for x in filtered_items if x.call == i_call][0]
+            i_last_date = [x.time_utc_off for x in filtered_items if x.call == i_call][-1]
+            # print(f"{i_last_date} - {i_call}: {i_name}")
+            txt_out += f"{i_last_date} - {i_call}: {i_name}\n"
+
+        print(txt_out)
+
+        if fp_out != "":
+            with open(fp_out, "w") as f:
+                f.write(txt_out)
 
 
-    df_germany()
+    df_germany(fp_out=f"{C_WORK_DATA_DIR}/output/ov_germany.txt")
 
     # Map
     print("\n[Map]\n")

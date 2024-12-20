@@ -35,6 +35,9 @@ See example output below.
 ![](workData/output/qso_bands.png)
 ![](workData/output/qso_distance.png)
 
+![](workData/output/ft8_distance_vs_rst_rcvd.png)
+![](workData/output/ft8_distance_vs_rst_sent.png)
+
 ![](workData/output/qso_per_date.png)
 ![](workData/output/qso_count_over_time.png)
 ![](workData/output/qso_per_month_of_year.png)
@@ -51,21 +54,23 @@ See example output below.
 ### Files
 
 - `workData/output/qso_map.html`
+- `workData/output/ov_logbook.txt`
+- `workData/output/ov_germany.txt`
 
 ### Stats
 
 ```
-Total QSO: 1374
+Total QSO: 1400
 First QSO: 2023-12-18 17:30:00
-Last QSO: 2024-12-18 18:18:44
-Num Paper QSL Sent: 913 (66.45%)
-Num Locators: 922
+Last QSO: 2024-12-20 08:41:14
+Num Paper QSL Sent: 913 (65.21%)
+Num Locators: 936
 My Locator: JN59NK
 My Call: DF0OHM
 ```
 
 ```
-# Clubstations Germany
+# Club Stations Germany 
 
 2024-03-09 12:51:45 - DF0TV: Club Station Erlangen, B08
 2024-10-30 09:57:30 - DL0DM: Deutsches Museum
@@ -74,4 +79,8 @@ My Call: DF0OHM
 2024-11-28 13:10:44 - DK0PT: University Club Station OTH Regensburg
 2024-12-01 12:13:04 - DF0GIF: Sigi DJ8VJ
 2024-12-14 17:18:44 - DL0MLU: Martin-Luther-University
+
+# Special Stations Germany 
+
+2024-07-17 20:56:23 - DL50WAF: Club Station from DL0AH
 ```

@@ -1,0 +1,13 @@
+# Club Stations Germany 
+
+2024-03-09 12:51:45 - DF0TV: Club Station Erlangen, B08
+2024-10-30 09:57:30 - DL0DM: Deutsches Museum
+2024-10-30 13:28:30 - DK0BMW: Clubstation BMW Werk Regensburg
+2024-11-05 18:24:48 - DL0EPC: Karl
+2024-11-28 13:10:44 - DK0PT: University Club Station OTH Regensburg
+2024-12-01 12:13:04 - DF0GIF: Sigi DJ8VJ
+2024-12-14 17:18:44 - DL0MLU: Martin-Luther-University
+
+# Special Stations Germany 
+
+2024-07-17 20:56:23 - DL50WAF: Club Station from DL0AH
