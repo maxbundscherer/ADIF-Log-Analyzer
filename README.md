@@ -17,7 +17,9 @@ See example output below.
 - Clone this repository and `cd` into it
 - Create virtual python env `python -m venv algEnv`
 - Activate env `source algEnv/bin/activate`
-- Install dependencies `pip install -r requirements.txt`
+- Install dependencies `pip install -r requirements.txt` or `pip install -r requirements-alt.txt`
+
+Debug: With some operating systems, `python3` and `pip3` must be used instead of `python` and `pip`!
 
 ### Usage
 
@@ -27,7 +29,7 @@ See example output below.
 
 ## Example Output
 
-### Pngs
+### Plots
 
 ![](workData/output/qso_map.png)
 ![](workData/output/qso_modes.png)
@@ -35,14 +37,16 @@ See example output below.
 ![](workData/output/qso_bands.png)
 ![](workData/output/qso_distance.png)
 
-![](workData/output/ft8_distance_vs_rst_rcvd.png)
-![](workData/output/ft8_distance_vs_rst_sent.png)
-
 ![](workData/output/qso_per_date.png)
 ![](workData/output/qso_count_over_time.png)
 ![](workData/output/qso_per_month_of_year.png)
 ![](workData/output/qso_per_day_of_week.png)
 ![](workData/output/qso_per_hour_of_day.png)
+
+### FT8 Plots
+
+![](workData/output/ft8_distance_vs_rst_rcvd.png)
+![](workData/output/ft8_distance_vs_rst_sent.png)
 
 ### Top Lists
 
