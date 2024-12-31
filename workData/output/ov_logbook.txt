@@ -1,8 +1,8 @@
-Total QSO: 1400
-First QSO: 2023-12-18 17:30:00
-Last QSO: 2024-12-20 08:41:14
-Num Calc Dist: 1397 (99.79%)
-Num Paper QSL Sent: 913 (65.21%)
-Num Locators: 936
+Total QSO: 1441
+First QSO: 2024-01-03 13:05:00
+Last QSO: 2024-12-31 13:57:33
+Num Calc Dist: 1438 (99.79%)
+Num Paper QSL Sent: 911 (63.22%)
+Num Locators: 961
 My Locator: JN59NK
 My Call: DF0OHM

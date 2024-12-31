@@ -582,11 +582,16 @@ if __name__ == "__main__":
 
         # Filter
         filtered_items = [x for x in all_qsos_ent if x.country == "Federal Republic Of Germany"]
+        # Add items with DP0
+        filtered_items = filtered_items + [x for x in all_qsos_ent if x.call[:3] == "DP0"]
         filtered_items_cp = []
         for item in filtered_items:
             t_call = item.call
             # Check if special call (with at least two digits)
             if len([x for x in t_call if x.isdigit()]) >= 2:
+                filtered_items_cp.append(item)
+            # Check if started with DP0
+            if t_call[:3] == "DP0":
                 filtered_items_cp.append(item)
         filtered_items = filtered_items_cp
 
