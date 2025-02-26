@@ -10,6 +10,11 @@ import plotly.graph_objects as go
 from utils.LocationUtil import LocationUtil
 from typing import Optional
 
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, portrait
+import pandas as pd
+
 
 @dataclass
 class QsoEntity:
@@ -179,6 +184,8 @@ if __name__ == "__main__":
     # Reverse
     # all_qsos_ent = all_qsos_ent[::-1]
 
+    all_qsos_ent_prep = []
+
     for qso in all_qsos_ent:
         qso: QsoEntity = qso
         print(
@@ -195,4 +202,70 @@ if __name__ == "__main__":
             qso.qsl_sent_improved
         )
 
+        all_qsos_ent_prep.append(qso)
+
+    del all_qsos_ent
+
     # TO PDF
+
+    # Beispiel-Daten aus deiner Schleife
+    data = [
+        [
+            c_operator,
+            qso.call,
+            qso.time_utc_off,
+            qso.mode,
+            qso.sub_mode,
+            qso.band,
+            qso.freq,
+            qso.rst_sent,
+            qso.rst_rcvd,
+            qso.qsl_sent_improved,
+            qso.name,
+        ]
+        for qso in all_qsos_ent_prep
+    ]
+
+    # Spaltenüberschriften hinzufügen
+    columns = [
+        "Operator",
+        "Call",
+        "Time UTC Off",
+        "Mode",
+        "Sub Mode",
+        "Band",
+        "Frequency",
+        "RST Sent",
+        "RST Received",
+        "QSL Sent"
+        "Name",
+    ]
+    data.insert(0, columns)
+
+    # PDF erstellen
+    pdf_file = f"{C_WORK_DATA_DIR}/outputPDF/qsos_table.pdf"
+    pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4))
+
+    # Spaltenbreiten manuell festlegen (in Punkten)
+    column_widths = [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+
+    table = Table(data, colWidths=column_widths)
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),  # Kleinere Schriftgröße
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('WORDWRAP', (0, 0), (-1, -1), False)  # Textumbruch deaktivieren
+    ])
+    table.setStyle(style)
+
+    # PDF speichern
+    pdf.build([table])
+
+    print(f"PDF '{pdf_file}' erfolgreich erstellt!")
