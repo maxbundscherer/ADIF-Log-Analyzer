@@ -186,30 +186,31 @@ if __name__ == "__main__":
     c_operator = input_operator
 
     # Enter last known Station Callsign
-    input_station = input("Enter last known Station Callsign: ")
+    input_station = input("Enter last printed Station Callsign (leave empty for all): ")
     input_station = input_station.strip()
     input_station = input_station.upper()
 
     # Search QSOs for Operator
-    all_qsos_ent_filter = [x for x in all_qsos_ent if x.call == input_station]
+    if input_station != "":
+        all_qsos_ent_filter = [x for x in all_qsos_ent if x.call == input_station]
 
-    assert len(all_qsos_ent_filter) > 0, f"Error: No QSOs found for {input_station}"
+        assert len(all_qsos_ent_filter) > 0, f"Error: No QSOs found for {input_station}"
 
-    if len(all_qsos_ent_filter) > 1:
-        print(f"Multiple QSOs found for {input_station}. Please select one:")
-        for i, qso in enumerate(all_qsos_ent_filter):
-            print(f"{i}: {qso.time_utc_off}")
-        input_idx = int(input("Enter Index: "))
-        all_qsos_ent_filter = [all_qsos_ent_filter[input_idx]]
+        if len(all_qsos_ent_filter) > 1:
+            print(f"Multiple QSOs found for {input_station}. Please select one:")
+            for i, qso in enumerate(all_qsos_ent_filter):
+                print(f"{i}: {qso.time_utc_off}")
+            input_idx = int(input("Enter Index: "))
+            all_qsos_ent_filter = [all_qsos_ent_filter[input_idx]]
 
-    print("Last QSO for Operator:", all_qsos_ent_filter[0].time_utc_off, all_qsos_ent_filter[0].call)
+        print("Last QSO for Operator:", all_qsos_ent_filter[0].time_utc_off, all_qsos_ent_filter[0].call)
 
-    # Get Date from next qso (in all_qsos_ent)
-    all_qsos_ent_filter = all_qsos_ent_filter[0]
-    all_qsos_ent_filter = [x for x in all_qsos_ent if x.time_utc_off > all_qsos_ent_filter.time_utc_off]
+        # Get Date from next qso (in all_qsos_ent)
+        all_qsos_ent_filter = all_qsos_ent_filter[0]
+        all_qsos_ent_filter = [x for x in all_qsos_ent if x.time_utc_off > all_qsos_ent_filter.time_utc_off]
 
-    # Filter Last to qso from this point
-    all_qsos_ent = [x for x in all_qsos_ent if x.time_utc_off >= all_qsos_ent_filter[0].time_utc_off]
+        # Filter Last to qso from this point
+        all_qsos_ent = [x for x in all_qsos_ent if x.time_utc_off >= all_qsos_ent_filter[0].time_utc_off]
 
     # Reverse
     # all_qsos_ent = all_qsos_ent[::-1]
@@ -265,7 +266,7 @@ if __name__ == "__main__":
     columns = [
         "Operator",
         "Station",
-        "Time Off (UTC)",
+        "QSO End (UTC)",
         "Mode",
         "Sub Mode",
         "Band",
@@ -278,7 +279,7 @@ if __name__ == "__main__":
     data.insert(0, columns)
 
     # PDF erstellen
-    pdf_file = f"{C_WORK_DATA_DIR}/outputPDF/qsos_table.pdf"
+    pdf_file = f"{C_WORK_DATA_DIR}outputPDF/qsos_table.pdf"
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4),
 
                             topMargin=1,
