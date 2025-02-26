@@ -234,8 +234,8 @@ if __name__ == "__main__":
     # Spaltenüberschriften hinzufügen
     columns = [
         "Operator",
-        "Call",
-        "Time UTC Off",
+        "Station",
+        "Time Off (UTC)",
         "Mode",
         "Sub Mode",
         "Band",
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     # Spaltenbreiten manuell festlegen (in Punkten)
     column_widths = [50, 70, 80, 40, 50, 40, 40, 40, 40, 40, 100]
 
-    table = Table(data, colWidths=column_widths)
+    table = Table(data, colWidths=column_widths, repeatRows=1)
 
     style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
