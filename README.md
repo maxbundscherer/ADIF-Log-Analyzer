@@ -4,7 +4,7 @@ Author: [DD7MB](https://dd7mb.de)
 
 A python tool for analysing and visualising ADIF (Amateur Data Interchange Format) logbook files.
 
-There is also a script included to generate a PDF report.
+There is also a script included to generate a PDF logbook.
 
 See example output below.
 
@@ -29,7 +29,7 @@ Debug: With some operating systems, `python3` and `pip3` must be used instead of
 - Run the script `python main.py` (activate your virtual env before, see installation)
 - See output in `workData/output` folder
 
-### Usage (to PDF)
+### Usage (to PDF Logbook)
 
 - Add your `*.adif` files to the `workData/input` folder
 - Run the script `python main_adif_to_pdf.py` (activate your virtual env before, see installation)
@@ -68,6 +68,7 @@ Debug: With some operating systems, `python3` and `pip3` must be used instead of
 - `workData/output/qso_map.html`
 - `workData/output/ov_logbook.txt`
 - `workData/output/ov_germany.txt`
+- `workData/outputPDF/loogbook.pdf`
 
 ### Stats
 

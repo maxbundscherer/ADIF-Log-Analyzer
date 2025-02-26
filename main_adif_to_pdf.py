@@ -279,7 +279,7 @@ if __name__ == "__main__":
     data.insert(0, columns)
 
     # PDF erstellen
-    pdf_file = f"{C_WORK_DATA_DIR}outputPDF/qsos_table.pdf"
+    pdf_file = f"{C_WORK_DATA_DIR}outputPDF/logbook.pdf"
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4),
 
                             topMargin=1,
