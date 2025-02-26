@@ -249,7 +249,11 @@ if __name__ == "__main__":
 
     # PDF erstellen
     pdf_file = f"{C_WORK_DATA_DIR}/outputPDF/qsos_table.pdf"
-    pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4))
+    pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4),
+
+                            topMargin=1,
+                            bottomMargin=1,
+                            )
 
     # Spaltenbreiten manuell festlegen (in Punkten)
     column_widths = [50, 70, 80, 40, 50, 40, 40, 40, 40, 40, 100]
@@ -258,13 +262,13 @@ if __name__ == "__main__":
 
     style = TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 8),  # Kopfzeilen-Schriftgröße auf 8pt
         ('FONTSIZE', (0, 1), (-1, -1), 7),  # Inhalt-Schriftgröße auf 7pt
         ('BOTTOMPADDING', (0, 0), (-1, 0), 4),  # Weniger Padding in der Kopfzeile
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
         ('WORDWRAP', (0, 0), (-1, -1), True)  # Textumbruch aktivieren
     ])
