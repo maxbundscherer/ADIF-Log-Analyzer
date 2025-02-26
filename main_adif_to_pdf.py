@@ -177,9 +177,39 @@ if __name__ == "__main__":
 
     del txt_out
 
-    # Collect Data Last n QSOs # TODO
-    all_qsos_ent = all_qsos_ent[-35:]
-    c_operator = "DD7MB"  # TODO
+    # Collect Data Last n QSOs
+
+    # Enter Operator CALLSIGN
+    input_operator = input("Enter Operator Callsign: ")
+    input_operator = input_operator.strip()
+    input_operator = input_operator.upper()
+    c_operator = input_operator
+
+    # Enter last known Station Callsign
+    input_station = input("Enter last known Station Callsign: ")
+    input_station = input_station.strip()
+    input_station = input_station.upper()
+
+    # Search QSOs for Operator
+    all_qsos_ent_filter = [x for x in all_qsos_ent if x.call == input_station]
+
+    assert len(all_qsos_ent_filter) > 0, f"Error: No QSOs found for {input_station}"
+
+    if len(all_qsos_ent_filter) > 1:
+        print(f"Multiple QSOs found for {input_station}. Please select one:")
+        for i, qso in enumerate(all_qsos_ent_filter):
+            print(f"{i}: {qso.time_utc_off}")
+        input_idx = int(input("Enter Index: "))
+        all_qsos_ent_filter = [all_qsos_ent_filter[input_idx]]
+
+    print("Last QSO for Operator:", all_qsos_ent_filter[0].time_utc_off, all_qsos_ent_filter[0].call)
+
+    # Get Date from next qso (in all_qsos_ent)
+    all_qsos_ent_filter = all_qsos_ent_filter[0]
+    all_qsos_ent_filter = [x for x in all_qsos_ent if x.time_utc_off > all_qsos_ent_filter.time_utc_off]
+
+    # Filter Last to qso from this point
+    all_qsos_ent = [x for x in all_qsos_ent if x.time_utc_off >= all_qsos_ent_filter[0].time_utc_off]
 
     # Reverse
     # all_qsos_ent = all_qsos_ent[::-1]
