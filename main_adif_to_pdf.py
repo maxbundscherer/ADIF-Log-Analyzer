@@ -234,7 +234,7 @@ if __name__ == "__main__":
         )
 
         qso.name = qso.name[:25]
-        qso.qsl_sent_improved = "ja" if qso.qsl_sent_improved else "nein"
+        qso.qsl_sent_improved = "yes" if qso.qsl_sent_improved else "no"
         qso.time_utc_off = qso.time_utc_off.strftime("%d.%m.%Y %H:%M:%S")
         qso.freq = f"{round(qso.freq, 3)}"
 
