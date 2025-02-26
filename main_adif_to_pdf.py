@@ -24,7 +24,7 @@ class QsoEntity:
     my_locator: str
     locator: Optional[str]
     freq: float
-    qsl_sent: bool
+    qsl_sent_improved: bool
     country: str
     rst_rcvd: str
     rst_sent: str
@@ -92,7 +92,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             my_locator=t_qso["my_gridsquare"],
             locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
             freq=round(float(t_qso["freq"]), 3),
-            qsl_sent=t_qso["qsl_sent"] == "Y",
+            qsl_sent_improved=t_qso["qsl_sent"] != "N",
             country=t_qso["country"],
             rst_rcvd=rst_rcvd,
             rst_sent=rst_sent,
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     C_WORK_DATA_DIR = "workData/"
 
     print("########################################")
-    print("[ADIF LOG ANALYZER]")
+    print("[ADIF LOG TO PDF]")
     print("########################################")
 
     # Load and parse ADIF files
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     print("\n[Logbook Overview]\n")
 
     num_total_qsos = len(all_qsos_ent)
-    num_send_qsl = len([x for x in all_qsos_ent if x.qsl_sent])
+    num_send_qsl = len([x for x in all_qsos_ent if x.qsl_sent_improved])
     num_diff_locator = len(set([x.locator for x in all_qsos_ent if x.locator is not None]))
     num_diff_my_locator = len(set([x.my_locator for x in all_qsos_ent]))
     num_diff_my_call = len(set([x.my_call for x in all_qsos_ent]))
@@ -169,3 +169,30 @@ if __name__ == "__main__":
     txt_out += "My Call: " + my_call + "\n"
 
     print(txt_out)
+
+    del txt_out
+
+    # Collect Data Last n QSOs # TODO
+    all_qsos_ent = all_qsos_ent[-3:]
+    c_operator = "DD7MB"  # TODO
+
+    # Reverse
+    # all_qsos_ent = all_qsos_ent[::-1]
+
+    for qso in all_qsos_ent:
+        qso: QsoEntity = qso
+        print(
+            c_operator,
+            qso.call,
+            qso.mode,
+            qso.time_utc_off,
+            qso.sub_mode,
+            qso.band,
+            qso.name,
+            qso.freq,
+            qso.rst_sent,
+            qso.rst_rcvd,
+            qso.qsl_sent_improved
+        )
+
+    # TO PDF
