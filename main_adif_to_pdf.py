@@ -178,7 +178,7 @@ if __name__ == "__main__":
     del txt_out
 
     # Collect Data Last n QSOs # TODO
-    all_qsos_ent = all_qsos_ent[-3:]
+    all_qsos_ent = all_qsos_ent[-35:]
     c_operator = "DD7MB"  # TODO
 
     # Reverse
@@ -201,6 +201,10 @@ if __name__ == "__main__":
             qso.rst_rcvd,
             qso.qsl_sent_improved
         )
+
+        qso.qsl_sent_improved = "ja" if qso.qsl_sent_improved else "nein"
+        qso.time_utc_off = qso.time_utc_off.strftime("%d.%m.%Y %H:%M:%S")
+        qso.freq = f"{round(qso.freq, 3)}"
 
         all_qsos_ent_prep.append(qso)
 
@@ -234,11 +238,11 @@ if __name__ == "__main__":
         "Mode",
         "Sub Mode",
         "Band",
-        "Frequency",
+        "Freq. MHz",
         "RST Sent",
-        "RST Received",
-        "QSL Sent"
-        "Name",
+        "RST Rec.",
+        "QSL Sent",
+        "Name"
     ]
     data.insert(0, columns)
 
@@ -247,7 +251,7 @@ if __name__ == "__main__":
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4))
 
     # Spaltenbreiten manuell festlegen (in Punkten)
-    column_widths = [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+    column_widths = [50, 70, 80, 40, 40, 40, 40, 40, 40, 40, 100]
 
     table = Table(data, colWidths=column_widths)
 
@@ -256,12 +260,12 @@ if __name__ == "__main__":
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),  # Kleinere Schriftgröße
-        ('FONTSIZE', (0, 1), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('FONTSIZE', (0, 0), (-1, 0), 8),  # Kopfzeilen-Schriftgröße auf 8pt
+        ('FONTSIZE', (0, 1), (-1, -1), 7),  # Inhalt-Schriftgröße auf 7pt
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 4),  # Weniger Padding in der Kopfzeile
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('WORDWRAP', (0, 0), (-1, -1), False)  # Textumbruch deaktivieren
+        ('WORDWRAP', (0, 0), (-1, -1), True)  # Textumbruch aktivieren
     ])
     table.setStyle(style)
 
