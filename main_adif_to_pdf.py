@@ -202,6 +202,7 @@ if __name__ == "__main__":
             qso.qsl_sent_improved
         )
 
+        qso.name = qso.name[:25]
         qso.qsl_sent_improved = "ja" if qso.qsl_sent_improved else "nein"
         qso.time_utc_off = qso.time_utc_off.strftime("%d.%m.%Y %H:%M:%S")
         qso.freq = f"{round(qso.freq, 3)}"
@@ -251,7 +252,7 @@ if __name__ == "__main__":
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4))
 
     # Spaltenbreiten manuell festlegen (in Punkten)
-    column_widths = [50, 70, 80, 40, 40, 40, 40, 40, 40, 40, 100]
+    column_widths = [50, 70, 80, 40, 50, 40, 40, 40, 40, 40, 100]
 
     table = Table(data, colWidths=column_widths)
 
