@@ -298,8 +298,8 @@ if __name__ == "__main__":
     table = Table(data, colWidths=column_widths, repeatRows=1)
 
     style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
         ('FONTSIZE', (0, 0), (-1, 0), 7),  # Kopfzeilen-Schriftgröße auf 8pt
