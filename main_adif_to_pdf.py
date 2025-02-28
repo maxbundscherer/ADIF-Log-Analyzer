@@ -285,8 +285,8 @@ if __name__ == "__main__":
     pdf_file = f"{C_WORK_DATA_DIR}outputPDF/logbook.pdf"
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4),
 
-                            topMargin=25,
-                            bottomMargin=25,
+                            topMargin=35,
+                            bottomMargin=35,
 
                             # leftMargin=25,
                             # rightMargin=25,
