@@ -270,10 +270,10 @@ if __name__ == "__main__":
         "Mode",
         "Sub Mode",
         "Band",
-        "Freq. MHz",
-        "RST Sent",
-        "RST Rec.",
-        "QSL Sent",
+        "Freq.\nMHz",
+        "RST\nSent",
+        "RST\nRec.",
+        "QSL\nSent",
         "Name"
     ]
     data.insert(0, columns)
@@ -282,12 +282,15 @@ if __name__ == "__main__":
     pdf_file = f"{C_WORK_DATA_DIR}outputPDF/logbook.pdf"
     pdf = SimpleDocTemplate(pdf_file, pagesize=portrait(A4),
 
-                            topMargin=1,
-                            bottomMargin=1,
+                            topMargin=25,
+                            bottomMargin=25,
+
+                            # leftMargin=25,
+                            # rightMargin=25,
                             )
 
     # Spaltenbreiten manuell festlegen (in Punkten)
-    column_widths = [50, 70, 80, 40, 50, 40, 40, 40, 40, 40, 100]
+    column_widths = [40, 70, 80, 40, 50, 30, 40, 20, 20, 20, 100]
 
     table = Table(data, colWidths=column_widths, repeatRows=1)
 
@@ -295,8 +298,8 @@ if __name__ == "__main__":
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 8),  # Kopfzeilen-Schriftgröße auf 8pt
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, 0), 7),  # Kopfzeilen-Schriftgröße auf 8pt
         ('FONTSIZE', (0, 1), (-1, -1), 7),  # Inhalt-Schriftgröße auf 7pt
         ('BOTTOMPADDING', (0, 0), (-1, 0), 4),  # Weniger Padding in der Kopfzeile
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
