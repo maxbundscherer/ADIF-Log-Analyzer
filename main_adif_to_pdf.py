@@ -222,6 +222,10 @@ if __name__ == "__main__":
 
     for qso in all_qsos_ent:
         qso: QsoEntity = qso
+
+        # Replace 0 to crossed 0 (zero)
+        qso.call = qso.call.replace("0", "Ø")
+
         print(
             c_operator,
             qso.call,
