@@ -492,6 +492,7 @@ if __name__ == "__main__":
     print("\n[Top N Stats]\n")
 
     all_items = [x.call for x in all_qsos_ent]
+    all_items = [x for x in all_items if x is not None]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
     counter = dict(list(counter.items())[:25])
@@ -505,6 +506,7 @@ if __name__ == "__main__":
     plt.close("all")
 
     all_items = [x.locator for x in all_qsos_ent]
+    all_items = [x for x in all_items if x is not None]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
     counter = dict(list(counter.items())[:25])
@@ -518,6 +520,7 @@ if __name__ == "__main__":
     plt.close("all")
 
     all_items = [x.country for x in all_qsos_ent]
+    all_items = [x for x in all_items if x is not None]
     counter = Counter(all_items)
     counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
     counter = dict(list(counter.items())[:25])
