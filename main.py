@@ -81,6 +81,14 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
         if "rst_sent" in t_qso:
             rst_sent = t_qso["rst_sent"]
 
+        l_qsl_sent_improved = False
+        if "qsl_sent" in t_qso:
+            l_qsl_sent_improved = t_qso["qsl_sent"] != "N"
+
+        l_country = ""
+        if "country" in t_qso:
+            l_country = t_qso["country"]
+
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
             my_call=t_qso["station_callsign"],
@@ -92,8 +100,8 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             my_locator=t_qso["my_gridsquare"],
             locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
             freq=round(float(t_qso["freq"]), 3),
-            qsl_sent=t_qso["qsl_sent"] == "Y",
-            country=t_qso["country"],
+            qsl_sent=l_qsl_sent_improved,
+            country=l_country,
             rst_rcvd=rst_rcvd,
             rst_sent=rst_sent,
             name=t_name,
