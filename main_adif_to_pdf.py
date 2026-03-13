@@ -94,11 +94,23 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
         if "country" in t_qso:
             l_country = t_qso["country"]
 
+        l_time_utc_on = ""
+        if "qso_date" in t_qso and "time_on" in t_qso:
+            l_time_utc_on = datetime.strptime(t_qso["qso_date"] + t_qso["time_on"], "%Y%m%d%H%M%S")
+
+        l_time_utc_off = ""
+        if "qso_date_off" in t_qso and "time_off" in t_qso:
+            l_time_utc_off = datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"], "%Y%m%d%H%M%S")
+
+        l_calc_duration = 0
+        if l_time_utc_on != "" and l_time_utc_off != "":
+            l_calc_duration = (l_time_utc_off - l_time_utc_on).total_seconds()
+
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
             my_call=t_qso["station_callsign"],
-            time_utc_on=datetime.strptime(t_qso["qso_date"] + t_qso["time_on"], "%Y%m%d%H%M%S"),
-            time_utc_off=datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"], "%Y%m%d%H%M%S"),
+            time_utc_on=l_time_utc_on,
+            time_utc_off=l_time_utc_off,
             mode=t_qso["mode"],
             band=t_qso["band"],
             sub_mode=t_qso["submode"] if "submode" in t_qso else None,
@@ -111,9 +123,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             rst_sent=rst_sent,
             name=t_name,
             calc_distance=calc_distance,
-            calc_duration=(datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"],
-                                             "%Y%m%d%H%M%S") - datetime.strptime(t_qso["qso_date"] + t_qso["time_on"],
-                                                                                 "%Y%m%d%H%M%S")).total_seconds()
+            calc_duration=l_calc_duration
         ))
 
     ret_qsos.sort(key=lambda x: x.time_utc_off)
