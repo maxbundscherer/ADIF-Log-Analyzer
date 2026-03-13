@@ -341,7 +341,9 @@ if __name__ == "__main__":
     num_diff_my_call = len(set([x.my_call for x in all_qsos_ent]))
     num_calc_distance = len([x for x in all_qsos_ent if x.calc_distance is not None])
 
-    assert num_diff_my_locator == 1, "Error: Multiple My Locators found"
+    # assert num_diff_my_locator == 1, "Error: Multiple My Locators found"
+    if num_diff_my_locator != 1:
+        print("WARNING: More than 1 My Locator found. Please check your ADIF files for consistency.")
     my_locator = all_qsos_ent[0].my_locator
     my_lat, my_lon = LocationUtil.maidenhead_to_coordinates(
         my_locator).latitude, LocationUtil.maidenhead_to_coordinates(my_locator).longitude
