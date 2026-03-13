@@ -96,10 +96,13 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
         l_time_utc_off = ""
         if "qso_date_off" in t_qso and "time_off" in t_qso:
             l_time_utc_off = datetime.strptime(t_qso["qso_date_off"] + t_qso["time_off"], "%Y%m%d%H%M%S")
+        else:
+            l_time_utc_off = l_time_utc_on
 
         l_calc_duration = 0
         if l_time_utc_on != "" and l_time_utc_off != "":
-            l_calc_duration = (l_time_utc_off - l_time_utc_on).total_seconds()
+            if l_time_utc_on != l_time_utc_off:
+                l_calc_duration = (l_time_utc_off - l_time_utc_on).total_seconds()
 
         ret_qsos.append(QsoEntity(
             call=t_qso["call"],
