@@ -69,7 +69,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                     calc_distance = calc_distance.distance
                     calc_distance = round(calc_distance, 2)
                 except Exception as e:
-                    print(f"Warn by {t_qso}: {t_qso['gridsquare']}/{t_qso['call']}: {e}")
+                    print(f"- Warn by {str(t_qso).strip()}: {t_qso['gridsquare']}/{t_qso['call']}: {e}")
 
             t_name = ""
             if "name" in t_qso:
@@ -127,7 +127,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
             ))
 
         except Exception as e:
-            print(f"Error by {t_qso}: {e} [skipped]")
+            print(f"- Warn by {str(t_qso).strip()}: {e} [skipped]")
 
     ret_qsos.sort(key=lambda x: x.time_utc_off)
 
@@ -176,7 +176,7 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
             worked_grid_locators_cp.append(LocationUtil.maidenhead_to_coordinates(locator))
             items_cp.append(item)
         except Exception as e:
-            print(f"Warn by {item}: {locator}/{item.call}: {e}")
+            print(f"- Warn by {str(item).strip()}: {locator}/{item.call}: {e}")
 
     worked_grid_locators = worked_grid_locators_cp
     worked_items = items_cp
