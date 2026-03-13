@@ -74,7 +74,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                     calc_distance = calc_distance.distance
                     calc_distance = round(calc_distance, 2)
                 except Exception as e:
-                    print(f"Warn by {t_qso['gridsquare']}/{t_qso['call']}: {e}")
+                    print(f"Warn by {t_qso}: {t_qso['gridsquare']}/{t_qso['call']}: {e}")
 
             t_name = ""
             if "name" in t_qso:
