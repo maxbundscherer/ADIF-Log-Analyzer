@@ -10,6 +10,8 @@ import plotly.graph_objects as go
 from utils.LocationUtil import LocationUtil
 from typing import Optional
 
+C_MY_LOCATOR = "JN59PL"
+
 
 @dataclass
 class QsoEntity:
@@ -64,7 +66,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                 try:
                     calc_distance = LocationUtil.calc_distance_azimuth(
                         loc_0=LocationUtil.maidenhead_to_coordinates(t_qso["gridsquare"]),
-                        loc_1=LocationUtil.maidenhead_to_coordinates(t_qso["my_gridsquare"])
+                        loc_1=LocationUtil.maidenhead_to_coordinates(C_MY_LOCATOR)
                     )
                     calc_distance = calc_distance.distance
                     calc_distance = round(calc_distance, 2)
@@ -114,7 +116,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
                 mode=t_qso["mode"],
                 band=t_qso["band"],
                 sub_mode=t_qso["submode"] if "submode" in t_qso else None,
-                my_locator=t_qso["my_gridsquare"],
+                my_locator=C_MY_LOCATOR,
                 locator=t_qso["gridsquare"] if "gridsquare" in t_qso else None,
                 freq=round(float(t_qso["freq"]), 3),
                 qsl_sent=l_qsl_sent_improved,
@@ -349,12 +351,22 @@ if __name__ == "__main__":
     # assert num_diff_my_locator == 1, "Error: Multiple My Locators found"
     if num_diff_my_locator != 1:
         print("WARNING: More than 1 My Locator found. Please check your ADIF files for consistency.")
-    my_locator = all_qsos_ent[0].my_locator
+
+    if num_diff_my_locator == 0:
+        print("WARNING: No My Locator found. Please check your ADIF files for consistency.")
+        my_locator = C_MY_LOCATOR
+    else:
+        my_locator = all_qsos_ent[0].my_locator
+
     my_lat, my_lon = LocationUtil.maidenhead_to_coordinates(
         my_locator).latitude, LocationUtil.maidenhead_to_coordinates(my_locator).longitude
 
-    assert num_diff_my_call == 1, "Error: Multiple My Calls found"
-    my_call = all_qsos_ent[0].my_call
+    if num_diff_my_call == 0:
+        print("WARNING: No My Call found. Please check your ADIF files for consistency.")
+        my_call = "N0CALL"
+    else:
+        assert num_diff_my_call == 1, "Error: Multiple My Calls found"
+        my_call = all_qsos_ent[0].my_call
 
     txt_out = ""
     # print(f"Total QSO: {num_total_qsos}")
@@ -453,44 +465,44 @@ if __name__ == "__main__":
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_per_hour_of_day.png")
 
     # FT8 Plots
-    print("\n[FT8 Plots]\n")
-
-    all_qsos_ft8 = [x for x in all_qsos_ent if x.mode == "FT8"]
-
-    # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
-    df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
-    df = df[df["RST_Sent"] != ""]
-    df["RST_Sent"] = df["RST_Sent"].map(lambda x: x.replace("--", "-"))
-    df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
-    fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
-
-                     color="Band"
-                     )
-    fig.update_xaxes(title_text="Distance [km]")
-    fig.update_yaxes(title_text="RST Sent SNR [dB]")
-    fig.update_xaxes(tickangle=90)
-    # limit y to -30 to 30
-    fig.update_yaxes(range=[-30, 30])
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_sent.png")
-    # fig.show()
-
-    df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
-    df = df[df["rst_rcvd"] != ""]
-    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: x.replace("--", "-"))
-    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
-    fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
-
-                     color="Band"
-                     )
-    fig.update_xaxes(title_text="Distance [km]")
-    fig.update_yaxes(title_text="RST Rcvd SNR [dB]")
-    fig.update_xaxes(tickangle=90)
-    # limit y to -30 to 30
-    fig.update_yaxes(range=[-30, 30])
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
-    # fig.show()
+    # print("\n[FT8 Plots]\n")
+    #
+    # all_qsos_ft8 = [x for x in all_qsos_ent if x.mode == "FT8"]
+    #
+    # # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
+    # df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
+    # df = df[df["RST_Sent"] != ""]
+    # df["RST_Sent"] = df["RST_Sent"].map(lambda x: x.replace("--", "-"))
+    # df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
+    # fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
+    #
+    #                  color="Band"
+    #                  )
+    # fig.update_xaxes(title_text="Distance [km]")
+    # fig.update_yaxes(title_text="RST Sent SNR [dB]")
+    # fig.update_xaxes(tickangle=90)
+    # # limit y to -30 to 30
+    # fig.update_yaxes(range=[-30, 30])
+    # fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    # fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_sent.png")
+    # # fig.show()
+    #
+    # df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
+    # df = df[df["rst_rcvd"] != ""]
+    # df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: x.replace("--", "-"))
+    # df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
+    # fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
+    #
+    #                  color="Band"
+    #                  )
+    # fig.update_xaxes(title_text="Distance [km]")
+    # fig.update_yaxes(title_text="RST Rcvd SNR [dB]")
+    # fig.update_xaxes(tickangle=90)
+    # # limit y to -30 to 30
+    # fig.update_yaxes(range=[-30, 30])
+    # fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+    # fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
+    # # fig.show()
 
     # Hist Mode
     print("\n[Hist Mode]\n")
@@ -506,11 +518,15 @@ if __name__ == "__main__":
 
     print("\n[QSO Count over Time]\n")
 
-    df = pd.DataFrame([{"Date": x.time_utc_off.date(), "Count": 1} for x in all_qsos_ent])
-    df = df.groupby("Date").agg({"Count": "sum"}).reset_index()
+    df = pd.DataFrame([
+        {"DateHour": x.time_utc_off.replace(minute=0, second=0, microsecond=0), "Count": 1}
+        for x in all_qsos_ent
+    ])
+    df = df.groupby("DateHour").agg({"Count": "sum"}).reset_index()
+    df = df.sort_values(by="DateHour")
     df["RunningSum"] = df["Count"].cumsum()
-    fig = px.line(df, x="Date", y="RunningSum", title="QSO Count over Time")
-    fig.update_xaxes(title_text="Date")
+    fig = px.line(df, x="DateHour", y="RunningSum", title="QSO Count over Time")
+    fig.update_xaxes(title_text="Date / Hour")
     fig.update_yaxes(title_text="Count")
     fig.update_xaxes(tickangle=90)
     # fig.show()
