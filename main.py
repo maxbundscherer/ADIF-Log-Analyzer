@@ -571,14 +571,14 @@ if __name__ == "__main__":
     print("\n[QSO Count over Time]\n")
 
     df = pd.DataFrame([
-        {"DateHour": x.time_utc_off.replace(minute=0, second=0, microsecond=0), "Count": 1}
+        {"DateMinute": x.time_utc_off.replace(second=0, microsecond=0), "Count": 1}
         for x in all_qsos_ent
     ])
-    df = df.groupby("DateHour").agg({"Count": "sum"}).reset_index()
-    df = df.sort_values(by="DateHour")
+    df = df.groupby("DateMinute").agg({"Count": "sum"}).reset_index()
+    df = df.sort_values(by="DateMinute")
     df["RunningSum"] = df["Count"].cumsum()
-    fig = px.line(df, x="DateHour", y="RunningSum", title="QSO Count over Time")
-    fig.update_xaxes(title_text="Date / Hour")
+    fig = px.line(df, x="DateMinute", y="RunningSum", title="QSO Count over Time")
+    fig.update_xaxes(title_text="Date / Minute")
     fig.update_yaxes(title_text="Count")
     fig.update_xaxes(tickangle=90)
     # fig.show()
@@ -586,14 +586,14 @@ if __name__ == "__main__":
 
     for t_band in worked_bands:
         df = pd.DataFrame([
-            {"DateHour": x.time_utc_off.replace(minute=0, second=0, microsecond=0), "Count": 1}
+            {"DateMinute": x.time_utc_off.replace(second=0, microsecond=0), "Count": 1}
             for x in all_qsos_ent if x.band == t_band
         ])
-        df = df.groupby("DateHour").agg({"Count": "sum"}).reset_index()
-        df = df.sort_values(by="DateHour")
+        df = df.groupby("DateMinute").agg({"Count": "sum"}).reset_index()
+        df = df.sort_values(by="DateMinute")
         df["RunningSum"] = df["Count"].cumsum()
-        fig = px.line(df, x="DateHour", y="RunningSum", title=f"QSO Count over Time on {t_band}")
-        fig.update_xaxes(title_text="Date / Hour")
+        fig = px.line(df, x="DateMinute", y="RunningSum", title=f"QSO Count over Time on {t_band}")
+        fig.update_xaxes(title_text="Date / Minute")
         fig.update_yaxes(title_text="Count")
         fig.update_xaxes(tickangle=90)
         # fig.show()
