@@ -348,6 +348,12 @@ if __name__ == "__main__":
     num_diff_my_call = len(set([x.my_call for x in all_qsos_ent]))
     num_calc_distance = len([x for x in all_qsos_ent if x.calc_distance is not None])
 
+    worked_bands = []
+
+    for x in all_qsos_ent:
+        if x.band is not None and x.band not in worked_bands:
+            worked_bands.append(x.band)
+
     # assert num_diff_my_locator == 1, "Error: Multiple My Locators found"
     if num_diff_my_locator != 1:
         print("WARNING: More than 1 My Locator found. Please check your ADIF files for consistency.")
@@ -504,6 +510,42 @@ if __name__ == "__main__":
     # fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
     # # fig.show()
 
+    # Counter Mode
+    print("\n[Counter Mode]\n")
+
+    # Plot QSO count per band
+    df = pd.DataFrame([{"Band": x.band, "Count": 1} for x in all_qsos_ent])
+    df = df.groupby("Band").agg({"Count": "sum"}).reset_index()
+    df = df.sort_values(by="Band")
+    print("Output of QSO count per band:")
+    print(df)
+    fig = px.bar(df, x="Band", y="Count", title="QSO Count per Band")
+    fig.update_xaxes(title_text="Band")
+    fig.update_yaxes(title_text="Count")
+    fig.update_xaxes(tickangle=90)
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_count_per_band.png")
+
+    # Plot unique Locator count per band
+    df = pd.DataFrame([{"Band": x.band, "Locator": x.locator} for x in all_qsos_ent if x.locator is not None])
+    df = df.groupby("Band").agg({"Locator": lambda x: len(set(x))}).reset_index()
+    df = df.sort_values(by="Band")
+    print("Output of unique locator count per band:")
+    print(df)
+    fig = px.bar(df, x="Band", y="Locator", title="Unique Locator Count per Band")
+    fig.update_xaxes(title_text="Band")
+    fig.update_yaxes(title_text="Unique Locator Count")
+    fig.update_xaxes(tickangle=90)
+    fig.write_image(f"{C_WORK_DATA_DIR}/output/unique_locator_count_per_band.png")
+
+    # Write top 25 distances with station call and locator and band
+    df = pd.DataFrame(
+        [{"Distance": x.calc_distance, "Call": x.call, "Locator": x.locator, "Band": x.band} for x in all_qsos_ent if
+         x.calc_distance is not None])
+    df = df.sort_values(by="Distance", ascending=False).head(50)
+    df.reset_index(drop=True, inplace=True)
+    print("Output of top 50 distances with station call and locator:")
+    print(df)
+
     # Hist Mode
     print("\n[Hist Mode]\n")
 
@@ -515,6 +557,16 @@ if __name__ == "__main__":
     fig.update_xaxes(tickangle=90)
     fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
+
+    for t_band in worked_bands:
+        df = pd.DataFrame(
+            [{"Distance": x.calc_distance} for x in all_qsos_ent if x.calc_distance is not None and x.band == t_band])
+        fig = px.histogram(df, x="Distance", title=f"Distance on {t_band}", nbins=100)
+        fig.update_xaxes(title_text="Distance [km]")
+        fig.update_yaxes(title_text="Count")
+        fig.update_xaxes(tickangle=90)
+        fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+        fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance_{t_band}.png")
 
     print("\n[QSO Count over Time]\n")
 
@@ -549,6 +601,21 @@ if __name__ == "__main__":
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_stations.png")
     plt.close("all")
 
+    for t_band in worked_bands:
+        all_items = [x.call for x in all_qsos_ent if x.band == t_band]
+        all_items = [x for x in all_items if x is not None]
+        counter = Counter(all_items)
+        counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+        counter = dict(list(counter.items())[:25])
+        plt.barh(list(counter.keys()), counter.values())
+        plt.xlabel("Count")
+        plt.ylabel("Station")
+        plt.title(f"Top 25: Stations on {t_band}")
+        plt.tight_layout()
+        # plt.show()
+        plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_stations_{t_band}.png")
+        plt.close("all")
+
     all_items = [x.locator for x in all_qsos_ent]
     all_items = [x for x in all_items if x is not None]
     counter = Counter(all_items)
@@ -562,6 +629,21 @@ if __name__ == "__main__":
     # plt.show()
     plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_locators.png")
     plt.close("all")
+
+    for t_band in worked_bands:
+        all_items = [x.locator for x in all_qsos_ent if x.band == t_band]
+        all_items = [x for x in all_items if x is not None]
+        counter = Counter(all_items)
+        counter = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+        counter = dict(list(counter.items())[:25])
+        plt.barh(list(counter.keys()), counter.values())
+        plt.xlabel("Count")
+        plt.ylabel("Locator")
+        plt.title(f"Top 25: Locators on {t_band}")
+        plt.tight_layout()
+        # plt.show()
+        plt.savefig(f"{C_WORK_DATA_DIR}/output/stats_top_locators_{t_band}.png")
+        plt.close("all")
 
     all_items = [x.country for x in all_qsos_ent]
     all_items = [x for x in all_items if x is not None]
