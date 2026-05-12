@@ -584,6 +584,21 @@ if __name__ == "__main__":
     # fig.show()
     fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_count_over_time.png")
 
+    for t_band in worked_bands:
+        df = pd.DataFrame([
+            {"DateHour": x.time_utc_off.replace(minute=0, second=0, microsecond=0), "Count": 1}
+            for x in all_qsos_ent if x.band == t_band
+        ])
+        df = df.groupby("DateHour").agg({"Count": "sum"}).reset_index()
+        df = df.sort_values(by="DateHour")
+        df["RunningSum"] = df["Count"].cumsum()
+        fig = px.line(df, x="DateHour", y="RunningSum", title=f"QSO Count over Time on {t_band}")
+        fig.update_xaxes(title_text="Date / Hour")
+        fig.update_yaxes(title_text="Count")
+        fig.update_xaxes(tickangle=90)
+        # fig.show()
+        fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_count_over_time_{t_band}.png")
+
     # Top n state
     print("\n[Top N Stats]\n")
 
