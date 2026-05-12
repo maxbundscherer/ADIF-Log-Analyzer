@@ -208,16 +208,15 @@ if __name__ == "__main__":
     # Collect Data Last n QSOs
 
     # Enter Operator CALLSIGN
-    input_operator = input("Enter Operator Callsign: ")
-    # input_operator = "DD7MB"
+    # input_operator = input("Enter Operator Callsign: ")
+    input_operator = "DD7MB"
     input_operator = input_operator.strip()
     input_operator = input_operator.upper()
     c_operator = input_operator
 
     # Enter last known Station Callsign
-    input_station = input("Enter last printed Station Callsign (leave empty for all): ")
-    # input_station = "YY4EBD"
-    # input_station = ""
+    # input_station = input("Enter last printed Station Callsign (leave empty for all): ")
+    input_station = "F5INV"  # 12.03.2026 17:10:57
     input_station = input_station.strip()
     input_station = input_station.upper()
 
