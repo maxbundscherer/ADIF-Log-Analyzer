@@ -19,6 +19,7 @@ import pandas as pd
 @dataclass
 class QsoEntity:
     call: str
+    operator: str
     my_call: str
     time_utc_on: datetime
     time_utc_off: datetime
@@ -49,9 +50,20 @@ def get_all_qsos(input_paths):
         t_qsos, _ = adif_io.read_from_file(C_WORK_DATA_DIR + "input/" + t_fp)
         print(f" - '{t_fp}' with {len(t_qsos)} QSOs")
         for t_qso in t_qsos:
-            ret_qsos.append(t_qso)
+            t_qso_with_source = t_qso
+            t_qso_with_source["_source_file"] = t_fp
+            ret_qsos.append(t_qso_with_source)
 
     return ret_qsos
+
+
+def get_operator_from_filename(filename: str) -> str:
+    p = os.path.splitext(os.path.basename(filename))[0].strip().upper()
+    p = p.split("_")
+    p = p[0]
+    if p == "DF0OHM":
+        return "DD7MB"
+    return p
 
 
 def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
@@ -113,6 +125,7 @@ def get_all_qsos_ent(input_qsos) -> [QsoEntity]:
 
             ret_qsos.append(QsoEntity(
                 call=t_qso["call"],
+                operator=get_operator_from_filename(t_qso["_source_file"]),
                 my_call=t_qso["station_callsign"],
                 time_utc_on=l_time_utc_on,
                 time_utc_off=l_time_utc_off,
@@ -180,8 +193,7 @@ if __name__ == "__main__":
     my_lat, my_lon = LocationUtil.maidenhead_to_coordinates(
         my_locator).latitude, LocationUtil.maidenhead_to_coordinates(my_locator).longitude
 
-    assert num_diff_my_call == 1, "Error: Multiple My Calls found"
-    my_call = all_qsos_ent[0].my_call
+    my_calls = list(set([x.my_call for x in all_qsos_ent]))
 
     txt_out = ""
     # print(f"Total QSO: {num_total_qsos}")
@@ -199,24 +211,17 @@ if __name__ == "__main__":
     # print("My Locator: " + my_locator)
     txt_out += "My Locator: " + my_locator + "\n"
     # print("My Call: " + my_call)
-    txt_out += "My Call: " + my_call + "\n"
+    txt_out += "My Calls: " + str(my_calls) + "\n"
 
     print(txt_out)
 
-    del txt_out
+    del txt_out, my_calls
 
     # Collect Data Last n QSOs
 
-    # Enter Operator CALLSIGN
-    input_operator = input("Enter Operator Callsign: ")
-    # input_operator = "DD7MB"
-    input_operator = input_operator.strip()
-    input_operator = input_operator.upper()
-    c_operator = input_operator
-
     # Enter last known Station Callsign
     input_station = input("Enter last printed Station Callsign (leave empty for all): ")
-    # input_station = "YY4EBD"
+    # input_station = "DA6KIS"  # DA6KIS 05.05.2026 16:30:00
     # input_station = ""
     input_station = input_station.strip()
     input_station = input_station.upper()
@@ -255,7 +260,7 @@ if __name__ == "__main__":
         qso.call = qso.call.replace("0", "Ø")
 
         print(
-            c_operator,
+            qso.operator,
             qso.call,
             qso.mode,
             qso.time_utc_off,
@@ -282,7 +287,7 @@ if __name__ == "__main__":
     # Beispiel-Daten aus deiner Schleife
     data = [
         [
-            c_operator,
+            qso.operator,
             qso.call,
             qso.time_utc_off,
             qso.mode,
