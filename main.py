@@ -208,6 +208,11 @@ def vis_map(items: [QsoEntity], fp="", fp_html="", static_mode=False):
     # Daten in ein DataFrame umwandeln
     df = pd.DataFrame(coordinates)
 
+    # CHeck if Latitude and Longitude are present
+    if "Latitude" not in df.columns or "Longitude" not in df.columns:
+        print("WARN: No Latitude and Longitude found in DataFrame. Skipping map visualization.")
+        return
+
     # Group by Latitute and Longitude
     df = df.groupby(["Latitude", "Longitude"]).agg(
         {"HoverLabel": lambda x: "<br>".join(x), "Band": "last"}).reset_index()
@@ -457,52 +462,58 @@ if __name__ == "__main__":
 
     all_qsos_ft8 = [x for x in all_qsos_ent if x.mode == "FT8"]
 
-    # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
-    df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
-    df = df[df["RST_Sent"] != ""]
-    df["RST_Sent"] = df["RST_Sent"].map(lambda x: x.replace("--", "-"))
-    df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
-    fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
+    if len(all_qsos_ft8) > 0:
+        # Plot with distance on x-axis and RST_Sent on y-axis (scatter)
+        df = pd.DataFrame([{"Distance": x.calc_distance, "RST_Sent": x.rst_sent, "Band": x.band} for x in all_qsos_ft8])
+        df = df[df["RST_Sent"] != ""]
+        df["RST_Sent"] = df["RST_Sent"].map(lambda x: x.replace("--", "-"))
+        df["RST_Sent"] = df["RST_Sent"].map(lambda x: int(x))
+        fig = px.scatter(df, x="Distance", y="RST_Sent", title="FT8: Distance vs. RST Sent",
 
-                     color="Band"
-                     )
-    fig.update_xaxes(title_text="Distance [km]")
-    fig.update_yaxes(title_text="RST Sent SNR [dB]")
-    fig.update_xaxes(tickangle=90)
-    # limit y to -30 to 30
-    fig.update_yaxes(range=[-30, 30])
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_sent.png")
-    # fig.show()
+                         color="Band"
+                         )
+        fig.update_xaxes(title_text="Distance [km]")
+        fig.update_yaxes(title_text="RST Sent SNR [dB]")
+        fig.update_xaxes(tickangle=90)
+        # limit y to -30 to 30
+        fig.update_yaxes(range=[-30, 30])
+        fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+        fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_sent.png")
+        # fig.show()
 
-    df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
-    df = df[df["rst_rcvd"] != ""]
-    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: x.replace("--", "-"))
-    df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
-    fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
+        df = pd.DataFrame([{"Distance": x.calc_distance, "rst_rcvd": x.rst_rcvd, "Band": x.band} for x in all_qsos_ft8])
+        df = df[df["rst_rcvd"] != ""]
+        df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: x.replace("--", "-"))
+        df["rst_rcvd"] = df["rst_rcvd"].map(lambda x: int(x))
+        fig = px.scatter(df, x="Distance", y="rst_rcvd", title="FT8: Distance vs. RST Rcvd",
 
-                     color="Band"
-                     )
-    fig.update_xaxes(title_text="Distance [km]")
-    fig.update_yaxes(title_text="RST Rcvd SNR [dB]")
-    fig.update_xaxes(tickangle=90)
-    # limit y to -30 to 30
-    fig.update_yaxes(range=[-30, 30])
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
-    # fig.show()
+                         color="Band"
+                         )
+        fig.update_xaxes(title_text="Distance [km]")
+        fig.update_yaxes(title_text="RST Rcvd SNR [dB]")
+        fig.update_xaxes(tickangle=90)
+        # limit y to -30 to 30
+        fig.update_yaxes(range=[-30, 30])
+        fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+        fig.write_image(f"{C_WORK_DATA_DIR}/output/ft8_distance_vs_rst_rcvd.png")
+        # fig.show()
+    else:
+        print("WARN: No FT8 QSOs found. Skipping FT8 specific plots.")
 
     # Hist Mode
     print("\n[Hist Mode]\n")
 
     # Plot Distance
     df = pd.DataFrame([{"Distance": x.calc_distance} for x in all_qsos_ent if x.calc_distance is not None])
-    fig = px.histogram(df, x="Distance", title="Distance", nbins=100)
-    fig.update_xaxes(title_text="Distance [km]")
-    fig.update_yaxes(title_text="Count")
-    fig.update_xaxes(tickangle=90)
-    fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
-    fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
+    if len(df) > 0:
+        fig = px.histogram(df, x="Distance", title="Distance", nbins=100)
+        fig.update_xaxes(title_text="Distance [km]")
+        fig.update_yaxes(title_text="Count")
+        fig.update_xaxes(tickangle=90)
+        fig.update_traces(marker=dict(line=dict(width=0.5, color='DarkSlateGrey')))
+        fig.write_image(f"{C_WORK_DATA_DIR}/output/qso_distance.png")
+    else:
+        print("WARN: No QSOs with distance found. Skipping distance histogram.")
 
     print("\n[QSO Count over Time]\n")
 
